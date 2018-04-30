@@ -13,7 +13,7 @@ $config = [
     'appSecret' => 'a0c7645f3d92e22a7fb0955b96c6bcc7',
 
     // 使用腾讯云代理登录
-    'useQcloudLogin' => true,
+    'useQcloudLogin' => false,
 
     /**
      * MySQL 配置，用来存储 session 和用户信息
