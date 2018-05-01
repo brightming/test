@@ -41,9 +41,10 @@ class User extends CI_Controller {
 			*/
 			$this->json([
 			'uri'=>$uri,
-			'openId'=>$this->input->post('openId')
+			'openId'=>$this->input->post('openId'),
+			'payload'=>getRequestPayload(request)
 			]);
-			
+			/*
 			JSONObject jsonObject = JSONObject.fromObject(getRequestPayload(request));
             String openId=jsonObject.get("openId").toString();
             String tableId=jsonObject.get("tableId").toString();
@@ -53,6 +54,7 @@ class User extends CI_Controller {
             System.out.println(openId + " " + tableId);
             s = "{\"employees\": [{ \"firstName\":\"John\" , \"lastName\":\"Doe\" },{ \"firstName\":\"Anna\" , \"lastName\":\"Smith\" },{ \"firstName\":\"Peter\" , \"lastName\":\"Jones\" }]}";
             response.getWriter().write(s);
+			*/
 			
 	}
 }
