@@ -25,6 +25,9 @@ class User extends CI_Controller {
 		
 		$uri = $_SERVER['REQUEST_URI']; 
 		
+		$rws_post = $GLOBALS['HTTP_RAW_POST_DATA'];
+		$mypost = json_decode($rws_post);
+		
 		/*$desc=$_REQUEST['extraDesc'];
 		$scores=$_REQUEST['scores'];
 		$storeId=$_REQUEST['storeId'];
@@ -42,7 +45,7 @@ class User extends CI_Controller {
 			$this->json([
 			'uri'=>$uri,
 			'openId'=>$this->input->post('openId'),
-			'payload'=>getRequestPayload(request)
+			'rws_post'=>$rws_post
 			]);
 			/*
 			JSONObject jsonObject = JSONObject.fromObject(getRequestPayload(request));
