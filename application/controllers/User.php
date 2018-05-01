@@ -40,7 +40,8 @@ class User extends CI_Controller {
             ]);
 			*/
 			$this->json([
-			'uri'=>$uri
+			'uri'=>$uri,
+			'openId'=>$this->input->post('openId')
 			]);
 			
 	}
