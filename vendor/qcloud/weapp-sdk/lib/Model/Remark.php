@@ -15,4 +15,8 @@ class Remark
 		return DB::select('RemarkTemplate',['*'],'status=1','','order by seq asc');	
 	}
 	
+	public static function addRemark($userRemark){
+		
+	}
+	
 }
