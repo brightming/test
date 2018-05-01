@@ -44,5 +44,15 @@ class User extends CI_Controller {
 			'openId'=>$this->input->post('openId')
 			]);
 			
+			JSONObject jsonObject = JSONObject.fromObject(getRequestPayload(request));
+            String openId=jsonObject.get("openId").toString();
+            String tableId=jsonObject.get("tableId").toString();
+            String s = "";
+            response.setContentType("application/json;charset=utf-8");
+            response.setHeader("Access-Control-Allow-Origin", "*");
+            System.out.println(openId + " " + tableId);
+            s = "{\"employees\": [{ \"firstName\":\"John\" , \"lastName\":\"Doe\" },{ \"firstName\":\"Anna\" , \"lastName\":\"Smith\" },{ \"firstName\":\"Peter\" , \"lastName\":\"Jones\" }]}";
+            response.getWriter().write(s);
+			
 	}
 }
