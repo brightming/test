@@ -29,4 +29,9 @@ class User
     public static function findUserBySKey ($skey) {
         return DB::row('cSessionInfo', ['*'], compact('skey'));
     }
+	
+	//用户最新的点评记录
+	public static function findUserLatestRemark($skey){
+		
+	}
 }

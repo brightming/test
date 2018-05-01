@@ -20,4 +20,20 @@ class User extends CI_Controller {
             ]);
         }
     }
+	
+	public function addRemark(){
+		$desc=$_REQUEST['extraDesc'];
+		$scores=$_REQUEST['scores'];
+		$storeId=$_REQUEST['storeId'];
+		$tableId=$_REQUEST['tableId'];
+		$openId=$_REQUEST['openId'];
+		
+		$this->json([
+                'desc' => $desc,
+                'scores' => $scores,
+				'storeId'=>$storeId,
+				'tableId'=>$tableId,
+				'openId'=>$openId
+            ]);
+	}
 }
