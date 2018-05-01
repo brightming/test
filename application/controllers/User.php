@@ -22,7 +22,10 @@ class User extends CI_Controller {
     }
 	
 	public function addRemark(){
-		$desc=$_REQUEST['extraDesc'];
+		
+		$uri = $_SERVER['REQUEST_URI']; 
+		
+		/*$desc=$_REQUEST['extraDesc'];
 		$scores=$_REQUEST['scores'];
 		$storeId=$_REQUEST['storeId'];
 		$tableId=$_REQUEST['tableId'];
@@ -35,5 +38,9 @@ class User extends CI_Controller {
 				'tableId'=>$tableId,
 				'openId'=>$openId
             ]);
+			*/
+			$this->json([
+			'uri':$uri]);
+			
 	}
 }
