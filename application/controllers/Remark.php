@@ -39,7 +39,7 @@ public function addRemark(){
 			$latest_time=$latest[0]->remark_time;
 			//比较时间
 			//$now=date('Y-m-d H:i:s',time());
-			$time2 = strtotime(now);
+			$time2 = strtotime(date('Y-m-d H:i:s',time()));
 			$time_pre=strtotime($latest_time);
 			$min=(time2-time_pre)/60;
 			if($min<10){
