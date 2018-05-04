@@ -29,17 +29,28 @@ public function addRemark(){
 		//查看这个openid的用户，对于这个店的这个桌子的点评，最近的一次是在什么时候，如果相隔不超过1小时，则拒绝评论
 		$userinfo = User::findUserByOpenId($openId);
 		$latest=remarkModel::getUserLatestRemark($userinfo->id,$storeId,$tableId);
+		$can_add=false;
 		if($latest==NULL){
 			//可以写
-			foreach($mypost->scores as $score){
-				print_r($score->remarkTempId);
-	            //remarkModel::addUserLatestRemark($mypost);
-			}
+			$can_add=true;
 			
 		}else{
 			//判断时间差是否满足要求，如果时间距离太近，则认为是已经点评过了，不允许再点评
-			
-			
+			$latest_time=$latest[0]->remark_time;
+			//比较时间
+			//$now=date('Y-m-d H:i:s',time());
+			$time2 = strtotime(now);
+			$time_pre=strtotime($latest_time);
+			$min=(time2-time_pre)/60;
+			if($min<10){
+				can_add=false;
+			}else{
+				can_add=true;
+			}
+		}
+		
+		if($can_add==true){
+			$result=remarkModel::addUserRemark($userinfo->id,$mypost);		
 		}
 		/**/
 			$this->json([
@@ -48,7 +59,9 @@ public function addRemark(){
 			'rws_post'=>$rws_post,
 			'userinfo'=>$userinfo,
 			'customer_id'=>$userinfo->id,
-			'latest'=>$latest
+			'latest'=>$latest,
+			'can_add'=>$can_add,
+			'result'=>$result
 			]);	
 	}
 }
