@@ -41,7 +41,7 @@ public function addRemark(){
 			//$now=date('Y-m-d H:i:s',time());
 			$time2 = strtotime(date('Y-m-d H:i:s',time()));
 			$time_pre=strtotime($latest_time);
-			$min=(time2-time_pre)/60;
+			$min=($time2-$time_pre)/60;
 			if($min<10){
 				$can_add=false;
 			}else{
