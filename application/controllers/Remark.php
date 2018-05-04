@@ -3,6 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 use QCloud_WeApp_SDK\Constants as Constants;
 use \QCloud_WeApp_SDK\Model\Remark as remarkModel;
+use \QCloud_WeApp_SDK\Model\User as User;
 
 /**
 点评相关
@@ -26,7 +27,8 @@ public function addRemark(){
 		
 		
 		//查看这个openid的用户，对于这个店的这个桌子的点评，最近的一次是在什么时候，如果相隔不超过1小时，则拒绝评论
-		$latest=remarkModel::getUserLatestRemark($openId,$storeId,$tableId);
+		$userinfo = User::findUserByOpenId($openId);
+		$latest=remarkModel::getUserLatestRemark($userinfo->open_id,$storeId,$tableId);
 		if($latest==NULL){
 			//可以写
 			foreach($mypost->scores as $score){

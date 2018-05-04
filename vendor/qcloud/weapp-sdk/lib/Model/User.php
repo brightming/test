@@ -30,4 +30,8 @@ class User
         return DB::row('cSessionInfo', ['*'], compact('skey'));
     }
 	
+	public static function findUserByOpenId ($open_id) {
+        return DB::row('cSessionInfo', ['*'], compact('open_id'));
+    }
+	
 }

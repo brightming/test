@@ -17,7 +17,14 @@ class Remark
 	
 	/* 获取用户最新的点评 */
 	public static function getUserLatestRemark($customerId,$storeId,$tableId){
-		return DB::select('CustomerRemarkRecord',['*'],'customer_id=`$customerId` and tableId=`$tableId` and storeId=`$storeId`','','order by remark_time desc limit 1');		
+		return DB::select('CustomerRemarkRecord',['*'],['customer_id'=>$customerId ,'tableId'=>$tableId ,'storeId'=>$storeId],'and','order by remark_time desc limit 1');		
+	}
+	
+	public static function addUserRemark($remarkData){
+		//插入CustomerRemarkRecord
+		
+		//插入CustomerRemarkDetail
+		
 	}
 	
 }
