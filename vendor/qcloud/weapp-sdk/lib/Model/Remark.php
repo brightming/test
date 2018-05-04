@@ -35,7 +35,7 @@ class Remark
 		$storeId=$remarkData->storeId;
 		
 		DB::insert('CustomerRemarkRecord', compact('customer_id', 'remark_time', 'order_id', 'extra_remark_desc', 'tableId', 'storeId'));
-		$res = DB::row('CustomerRemarkRecord', ['*'], compact('order_id');
+		$res = DB::row('CustomerRemarkRecord', ['*'], compact('order_id'));
 		
 		$customer_remark_rec_id=$res->customer_remark_rec_id;
 		
