@@ -46,7 +46,8 @@ public function addRemark(){
 			'uri'=>$uri,
 			'openId'=>$userinfo->open_id,
 			'rws_post'=>$rws_post,
-			'customer_id'=>$userinfo->customer_id,
+			'userinfo'=>$userinfo,
+			'customer_id'=>$userinfo->id,
 			'latest'=>$latest
 			]);	
 	}
