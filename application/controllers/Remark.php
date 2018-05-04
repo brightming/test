@@ -28,7 +28,7 @@ public function addRemark(){
 		
 		//查看这个openid的用户，对于这个店的这个桌子的点评，最近的一次是在什么时候，如果相隔不超过1小时，则拒绝评论
 		$userinfo = User::findUserByOpenId($openId);
-		$latest=remarkModel::getUserLatestRemark($userinfo->open_id,$storeId,$tableId);
+		$latest=remarkModel::getUserLatestRemark($userinfo->id,$storeId,$tableId);
 		if($latest==NULL){
 			//可以写
 			foreach($mypost->scores as $score){
