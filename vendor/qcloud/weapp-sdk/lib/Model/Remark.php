@@ -29,7 +29,7 @@ class Remark
 		//插入CustomerRemarkRecord
 		$customer_id=$input_customer_id;
 		$remark_time=date('Y-m-d H:i:s');
-		$order_id=strtotime(remark_time);
+		$order_id=strtotime($remark_time);
 		$extra_remark_desc=$remarkData->extraDesc;
 		$tableId=$remarkData->tableId;
 		$storeId=$remarkData->storeId;
