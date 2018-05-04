@@ -27,7 +27,7 @@ class Remark
 	*/
 	public static function addUserRemark($input_customer_id,$remarkData){
 		//插入CustomerRemarkRecord
-		$customer_id=input_customer_id;
+		$customer_id=$input_customer_id;
 		$remark_time=date('Y-m-d H:i:s');
 		$order_id=-1;
 		$extra_remark_desc=$remarkData->extraDesc;
