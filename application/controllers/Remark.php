@@ -43,9 +43,9 @@ public function addRemark(){
 			$time_pre=strtotime($latest_time);
 			$min=(time2-time_pre)/60;
 			if($min<10){
-				can_add=false;
+				$can_add=false;
 			}else{
-				can_add=true;
+				$can_add=true;
 			}
 		}
 		
