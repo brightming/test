@@ -39,8 +39,8 @@ public function addRemark(){
 			$this->json([
 			'uri'=>$uri,
 			'openId'=>$this->input->post('openId'),
-			'rws_post'=>$rws_post,
-			'latest'=>$latest
+			'rws_post'=>$rws_post//,
+			//'latest'=>$latest
 			]);	
 	}
 }
