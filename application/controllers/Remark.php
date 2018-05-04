@@ -44,7 +44,7 @@ public function addRemark(){
 		/**/
 			$this->json([
 			'uri'=>$uri,
-			'openId'=>$this->input->post('openId'),
+			'openId'=>$userinfo->open_id,
 			'rws_post'=>$rws_post,
 			'latest'=>$latest
 			]);	
