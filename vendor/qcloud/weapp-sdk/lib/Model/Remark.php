@@ -15,8 +15,9 @@ class Remark
 		return DB::select('RemarkTemplate',['*'],'status=1','','order by seq asc');	
 	}
 	
-	public static function addRemark($userRemark){
-		
+	/* 获取用户最新的点评 */
+	public static function getUserLatestRemark($customerId,$storeId,$tableId){
+		return DB::select('CustomerRemarkRecord',['*'],'customer_id=`$customerId` and tableId=`$tableId` and storeId=`$storeId`','','order by remark_time desc limit 1');		
 	}
 	
 }
