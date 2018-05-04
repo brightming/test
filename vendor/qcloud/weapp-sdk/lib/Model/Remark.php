@@ -29,13 +29,13 @@ class Remark
 		//插入CustomerRemarkRecord
 		$customer_id=$input_customer_id;
 		$remark_time=date('Y-m-d H:i:s');
-		$order_id=-1;
+		$order_id=strtotime(remark_time);
 		$extra_remark_desc=$remarkData->extraDesc;
 		$tableId=$remarkData->tableId;
 		$storeId=$remarkData->storeId;
 		
 		DB::insert('CustomerRemarkRecord', compact('customer_id', 'remark_time', 'order_id', 'extra_remark_desc', 'tableId', 'storeId'));
-		$res = DB::row('CustomerRemarkRecord', ['*'], compact('remark_time'));
+		$res = DB::row('CustomerRemarkRecord', ['*'], compact('order_id');
 		
 		$customer_remark_rec_id=$res->customer_remark_rec_id;
 		
