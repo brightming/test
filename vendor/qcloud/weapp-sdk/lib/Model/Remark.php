@@ -40,7 +40,7 @@ class Remark
 		$customer_remark_rec_id=$res->customer_remark_rec_id;
 		
 		//插入CustomerRemarkDetail
-		foreach($remarkData as $scoreItem){
+		foreach($remarkData->scores as $scoreItem){
 			$remark_template_id=$scoreItem->remarkTempId;
 			$remark_score=$scoreItem->score;
 			DB::insert('CustomerRemarkDetail', compact('customer_remark_rec_id','remark_template_id', 'remark_score'));		
