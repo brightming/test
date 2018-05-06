@@ -42,6 +42,12 @@ public function addTousu(){
 		$openId=$_POST["openId"];	
 		$userinfo = User::findUserByOpenId($openId);
 		
+		$this->json([
+		'openId'=>$openId,
+		'userinfo'=>$userinfo
+		]);
+		return;
+		
 		//-------------create files dir -----------------//
 		$file = $_FILES['upict']; // 
 		$tmpPath=$file['tmp_name'];
@@ -90,7 +96,7 @@ public function addTousu(){
 		'destination'=>$destination,
 		'ok'=>$ok,
 		'name'=>$file['name'] ,
-		'suffix'=>arr[1]
+		'suffix'=>$arr[1]
 		]);		
 	}
 }
