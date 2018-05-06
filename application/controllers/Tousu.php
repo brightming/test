@@ -58,8 +58,8 @@ public function addTousu(){
 				echo "该文件夹已经有了";  
 		}  		
 		
-		
-		$this->json(['json_decode_ts'=>json_decode($_POST["tousu"]),'ts1'=>$_POST["tousu"],'json_encode_ts2'=>json_encode($_POST["tousu"]),'tableId'=>$_POST['tableId'],'openId'=>$_POST['openId']]);
+		$complaint_ids=implode(",",$_POST->tousu);
+		$this->json(['complaint_ids'=>$complaint_ids,'json_decode_ts'=>json_decode($_POST["tousu"]),'ts1'=>$_POST["tousu"],'json_encode_ts2'=>json_encode($_POST["tousu"]),'tableId'=>$_POST['tableId'],'openId'=>$_POST['openId']]);
 		return;
 		   
 		//--save record---//	
