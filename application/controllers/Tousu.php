@@ -133,6 +133,7 @@ public function addTousu(){
 			return;
 		}
 		
+		
  
 		//--save record---//	
 	//public static function addUserTousu2($input_customer_id,$extra_comment,$table_id,$store_id,$picture_cnt,$picture_dir,$tousu){
@@ -140,7 +141,9 @@ public function addTousu(){
 		//public static function addTousuDingdan($complain_id,$cellphone,$customer_id,$order_pict_dir,$order_pict_cnt)
 		
 		if($res==NULL){
-			$this->json(['code'=>-1,'desc'=>'fail']);
+			$this->json(['code'=>-1,'desc'=>'addTousuDingdan fail',
+			'tousuid'=>$_POST["tousuid"],'cellphone'=>$_POST["cellphone"],
+			]);
 			return;
 		}
 		
