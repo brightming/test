@@ -49,7 +49,7 @@ public function addTousu(){
 		//-------------create files dir -----------------//
 		$file = $_FILES['upict']; // 
 		$tmpPath=$file['tmp_name'];
-		$dir='.uploads/'
+		$dir='.uploads/';
 		//按照年/月/日创建文件夹
 		$file_path="$dir".'/'.date("Y").'/'.date("m").'/'.date("d"); 
         if(!is_dir($file_path)){  
