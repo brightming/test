@@ -35,6 +35,7 @@ class Tousu
 		if($res==NULL){
 			
 		}else{
+			//把投诉的模板记录记下  TODO
 			
 		}
 		//$customer_complain_id=$res->id;
