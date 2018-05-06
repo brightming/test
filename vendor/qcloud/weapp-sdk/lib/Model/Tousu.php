@@ -12,7 +12,7 @@ class Tousu
 	  *
 	  */
 	public static function getTousuTemplateInfo(){
-		return DB::select('ComplaintTemplate',['*'],'status=1','','order by seq asc');	
+		return DB::select('ComplaintTemplate',['*'],'status=1','','order by id asc');	
 	}
 	
 	
