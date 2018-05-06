@@ -75,7 +75,7 @@ class Tousu
 	public static function addTousuDingdan($complain_id,$cellphone,$customer_id,$order_pict_dir,$order_pict_cnt){
 		
 		$create_time=date('Y-m-d H:i:s');
-		DB::insert('ComplainAndOrderPicture', compact('complain_id','cellphone','customer_id', 'order_pict_dir', 'order_pict_cnt'));
+		DB::insert('ComplainAndOrderPicture', compact('complain_id','cellphone','customer_id', 'create_time','order_pict_dir', 'order_pict_cnt'));
 		$res = DB::row('ComplainAndOrderPicture', ['*'], compact('create_time','customer_id'));
 		
 		
