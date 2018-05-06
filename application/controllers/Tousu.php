@@ -59,7 +59,7 @@ public function addTousu(){
 		}  		
 		
 		
-		$this->json(['tousu'=>$_POST["tousu"]]);
+		$this->json(['tousu'=>json_decode($_POST["tousu"])]);
 		return;
 		   
 		//--save record---//	
