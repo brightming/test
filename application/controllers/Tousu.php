@@ -58,17 +58,11 @@ public function addTousu(){
 				echo "该文件夹已经有了";  
 		}  		
 		
-		$this->json([
-		'originalName'=>$file['name'],
-		'arr'=>explode(".", $file['name'])
-		]);
-		return;
 		
-		$complaint_ids=$_POST['complain_ids'];
-			   
+ 
 		//--save record---//	
 	//public static function addUserTousu2($input_customer_id,$extra_comment,$table_id,$store_id,$picture_cnt,$picture_dir,$tousu){
-		$res=TousuModel::addUserTousu2($userinfo->id,$_POST["extraDesc"],$_POST["tableId"],$_POST["storeId"],1,$file_path,$complaint_ids);
+		$res=TousuModel::addUserTousu2($userinfo->id,$_POST["extraDesc"],$_POST["tableId"],$_POST["storeId"],1,$file_path,$_POST['complain_ids']);
 		
 		if($res==NULL){
 			$this->json(['code'=>-1,'desc'=>'fail']);
@@ -80,7 +74,7 @@ public function addTousu(){
 		
 		$originalName = $file['name']; 
         $arr = explode(".", $originalName);
-		$dest_name="tousu-".$res->id.'-1.'.$arr[0];
+		$dest_name="tousu-".$res->id.'-1.'.$arr[count($arr)-1];
 		$destination=$file_path.'/'.$dest_name;
 		if(move_uploaded_file($tmpPath, $destination)){
 			$ok=true;
@@ -90,6 +84,7 @@ public function addTousu(){
 		
 		
 		$this->json([
+		'code'=>1,
 		'type'=>$file['type'],
 		'tmpname'=>$file['tmp_name'],
 		'destination'=>$destination,
