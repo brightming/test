@@ -4,9 +4,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 use QCloud_WeApp_SDK\Constants as Constants;
 use \QCloud_WeApp_SDK\Model\Tousu as TousuModel;
 use \QCloud_WeApp_SDK\Model\User as User;
+use \QCloud_WeApp_SDK\Model\FileRecord as FileRecordModel;
 
 /**
-点评相关
+投诉相关
 
 */
 class Tousu extends CI_Controller {
@@ -33,6 +34,9 @@ public function addTousuNoPict(){
 	}
 }
    
+   /**
+   * 带图片投诉
+   */
 public function addTousu(){
 		
 		$uri = $_SERVER['REQUEST_URI']; 
@@ -42,11 +46,11 @@ public function addTousu(){
 		$openId=$_POST["openId"];	
 		$userinfo = User::findUserByOpenId($openId);
 		
-		$this->json([
-		'openId'=>$openId,
-		'userinfo'=>$userinfo
-		]);
-		return;
+		//$this->json([
+		//'openId'=>$openId,
+		//'userinfo'=>$userinfo
+		//]);
+		//return;
 		
 		//-------------create files dir -----------------//
 		$file = $_FILES['upict']; // 
@@ -87,8 +91,12 @@ public function addTousu(){
 		}
 		
 		//-----save to file record---//
-		
-		
+		$res=FileRecordModel::storeFileRecord ($userinfo->id,1, $res->id, $destination,$file['size'] ) ;
+		$filerec=false;
+		if($res!=NULL){
+			$filerec=true;
+			
+		}
 		$this->json([
 		'code'=>1,
 		'type'=>$file['type'],
@@ -96,7 +104,8 @@ public function addTousu(){
 		'destination'=>$destination,
 		'ok'=>$ok,
 		'name'=>$file['name'] ,
-		'suffix'=>$arr[1]
+		'suffix'=>$arr[1],
+		'filerec'=>$filerec
 		]);		
 	}
 }

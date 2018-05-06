@@ -16,7 +16,7 @@ class Tousu
 	}
 	
 	
-	public static function addUserTousu2($input_customer_id,$extra_comment,$table_id,$store_id,$picture_cnt,$picture_dir,$complaint_ids){
+	public static function addUserTousu2($customer_id,$extra_comment,$table_id,$store_id,$picture_cnt,$picture_dir,$complaint_ids){
 		$create_time=date('Y-m-d H:i:s');
 		$order_id=strtotime($create_time);
 		
