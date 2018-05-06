@@ -49,7 +49,7 @@ public function addTousu(){
 		//$uploaddir = $_SERVER['DOCUMENTROOT']."/uploads/";
 		$ok=false;
 		$destination='/uploads/1.jpg';
-		if(move_uploaded_file($_FILES['upict']['tmpname'], $destination)){
+		if(move_uploaded_file($tmpPath, $destination)){
 			$ok=true;
 		}
 		
