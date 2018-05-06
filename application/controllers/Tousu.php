@@ -60,7 +60,7 @@ public function addTousu(){
 		
 		$this->json([
 		'originalName'=>$file['name'],
-		'arr'=>explode(".", $file['name']);
+		'arr'=>explode(".", $file['name'])
 		]);
 		return;
 		
