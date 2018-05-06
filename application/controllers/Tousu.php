@@ -73,7 +73,7 @@ public function addTousu(){
 		
 		$originalName = $file['name']; 
         $arr = explode(".", $originalName);
-		$dest_name="tousu-".$res->id.'-1'.$arr[1];
+		$dest_name="tousu-".$res->id.'-1.'.$arr[0];
 		$destination=$file_path.'/'.$dest_name;
 		if(move_uploaded_file($tmpPath, $destination)){
 			$ok=true;
