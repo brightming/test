@@ -47,10 +47,10 @@ public function addTousu(){
 		
 		
 		//$uploaddir = $_SERVER['DOCUMENTROOT']."/uploads/";
-		var ok=false;
+		$ok=false;
 		$destination=$_SERVER['DOCUMENTROOT'].'/1.jpg';
 		if(move_uploaded_file($_FILES['upict']['tmpname'], $destination)){
-			ok=true;
+			$ok=true;
 		}
 		
 		$this->json([
@@ -58,7 +58,7 @@ public function addTousu(){
 		'tmpname'=>$file['tmp_name'],
 		'destination'=>$destination,
 		'documentroot'=>$_SERVER['DOCUMENTROOT'],
-		'ok'=>ok
+		'ok'=>$ok
 		]);
 		
 			
