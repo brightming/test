@@ -57,17 +57,21 @@ public function addTousu(){
 		$tmpPath=$file['tmp_name'];
 		$dir='./uploads/';
 		//按照年/月/日创建文件夹
-		$file_path="$dir".'/'.date("Y").'/'.date("m").'/'.date("d"); 
+		$file_path="$dir".'/'.date("Y").'/'.date("m").'/'.date("d");
+
+        $dir_ok=true		
         if(!is_dir($file_path)){  
-             if (mkdir($file_path,755,true)) {  
-                  echo "创建递归文件夹成功";  
+             if (mkdir($file_path,755,true)) {                    
              }else{  
-                 echo "创建文件夹失败";  
+                 $dir_ok=false;
              }  
 		}else{  
-				echo "该文件夹已经有了";  
 		}  		
 		
+		if($dir_ok==false){
+			$this->json(['code'=>-2,'desc'=>'folder fail']);
+			return;
+		}
 		
  
 		//--save record---//	
