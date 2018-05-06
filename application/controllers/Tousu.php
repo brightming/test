@@ -57,7 +57,6 @@ public function addTousu(){
 		'type'=>$file['type'],
 		'tmpname'=>$file['tmp_name'],
 		'destination'=>$destination,
-		'documentroot'=>$_SERVER['DOCUMENTROOT'],
 		'ok'=>$ok,
 		'filetype'=>$file['type'] 
 		]);
