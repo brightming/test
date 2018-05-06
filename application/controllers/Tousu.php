@@ -58,6 +58,9 @@ public function addTousu(){
 				echo "该文件夹已经有了";  
 		}  		
 		
+		
+		$this->json(['tousu'=>$_POST["tousu"]]);
+		return;
 		   
 		//--save record---//	
 	//public static function addUserTousu2($input_customer_id,$extra_comment,$table_id,$store_id,$picture_cnt,$picture_dir,$tousu){
