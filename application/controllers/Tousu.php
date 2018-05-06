@@ -2,7 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 use QCloud_WeApp_SDK\Constants as Constants;
-use \QCloud_WeApp_SDK\Model\Tousu as Tousu;
+use \QCloud_WeApp_SDK\Model\Tousu as TousuModel;
 use \QCloud_WeApp_SDK\Model\User as User;
 
 /**
@@ -13,7 +13,7 @@ class Tousu extends CI_Controller {
 
 public function index(){
 	//获取投诉模板
-	$result=Tousu::getTousuTemplateInfo();
+	$result=TousuModel::getTousuTemplateInfo();
 	$this->json(['data'=>$result]);
 }
 
@@ -24,7 +24,7 @@ public function addTousuNoPict(){
 	$openId=$mypost->openId;
 	
 	$userinfo = User::findUserByOpenId($openId);
-	$res=Tousu::addUserTousu($userinfo->id,$mypost);
+	$res=TousuModel::addUserTousu($userinfo->id,$mypost);
 	
 	if($res==NULL){
 		$this->json(['code'=>-1,'desc'=>'fail']);
