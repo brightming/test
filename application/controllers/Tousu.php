@@ -38,8 +38,8 @@ public function addTousu(){
 		$uri = $_SERVER['REQUEST_URI']; 
 		
 		//$rws_post = $GLOBALS['HTTP_RAW_POST_DATA'];
-		$rws_post = $_SERVER['formData']; 
-		$mypost = json_decode($rws_post);
+		
+		$openId=$_POST["openId"];
 		
 			
 		$file = $_FILES['upict']; // 
@@ -48,7 +48,7 @@ public function addTousu(){
 		
 		//$uploaddir = $_SERVER['DOCUMENTROOT']."/uploads/";
 		$ok=false;
-		$destination=$_SERVER['DOCUMENTROOT'].'/1.jpg';
+		$destination='/uploads/1.jpg';
 		if(move_uploaded_file($_FILES['upict']['tmpname'], $destination)){
 			$ok=true;
 		}
