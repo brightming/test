@@ -39,12 +39,8 @@ public function addTousu(){
 		
 		//$rws_post = $GLOBALS['HTTP_RAW_POST_DATA'];
 		
-		$openId=$_POST["openId"];
-	
-		$datas=stdclass();
+		$openId=$_POST["openId"];	
 		$userinfo = User::findUserByOpenId($openId);
-		
-		
 		
 		//-------------create files dir -----------------//
 		$file = $_FILES['upict']; // 
