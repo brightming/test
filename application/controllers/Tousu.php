@@ -48,7 +48,7 @@ public function addTousu(){
 		
 		//$uploaddir = $_SERVER['DOCUMENTROOT']."/uploads/";
 		$ok=false;
-		$destination='/uploads/1.jpg';
+		$destination='1.jpg';
 		if(move_uploaded_file($tmpPath, $destination)){
 			$ok=true;
 		}
@@ -58,7 +58,8 @@ public function addTousu(){
 		'tmpname'=>$file['tmp_name'],
 		'destination'=>$destination,
 		'documentroot'=>$_SERVER['DOCUMENTROOT'],
-		'ok'=>$ok
+		'ok'=>$ok,
+		'filetype'=>$file['type'] 
 		]);
 		
 			
