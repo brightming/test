@@ -5,7 +5,7 @@ use QCloud_WeApp_SDK\Mysql\Mysql as DB;
 use QCloud_WeApp_SDK\Constants;
 use \Exception;
 
-class Remark
+class Tousu
 {
 	/**
 	  * 获取全部的点评模板信息，以seq升序来排
