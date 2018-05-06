@@ -30,7 +30,7 @@ public function addTousuNoPict(){
 	if($res==NULL){
 		$this->json(['code'=>-1,'desc'=>'fail']);
 	}else{
-		$this->json(['code'=>1,'desc'=>'success','id'=>$res->id]);
+		$this->json(['code'=>1,'desc'=>'success','tousuid'=>$res->id]);
 	}
 }
    
@@ -103,13 +103,7 @@ public function addTousu(){
 		}
 		$this->json([
 		'code'=>1,
-		'type'=>$file['type'],
-		'tmpname'=>$file['tmp_name'],
-		'destination'=>$destination,
-		'ok'=>$ok,
-		'name'=>$file['name'] ,
-		'suffix'=>$arr[1],
-		'filerec'=>$filerec
+		'tousuid'=>$res->id
 		]);		
 	}
 }
