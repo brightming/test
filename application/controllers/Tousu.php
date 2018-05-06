@@ -42,9 +42,15 @@ public function addTousu(){
 		
 			
 		$file = $_FILES['upict']; // 
+		$tmpPath=$file['tmp_name'];
+		
+		$destination='1.jpg';
+		move_uploaded_file($tmpPath, $destination);  
+		
 		$this->json([
 		'type'=>$file['type'],
-		'tmpname'=>$file['tmp_name']
+		'tmpname'=>$file['tmp_name'],
+		'$destination'=>$destination
 		]);
 		
 			
