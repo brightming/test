@@ -25,7 +25,7 @@ class Tousu
 		$store_id=$tousuData->storeId;
 		$picture_cnt=$tousuData->picture_cnt;
 		$picture_dir=$tousuData->picture_dir;
-		$order_id=strtotime($remark_time);
+		$order_id=strtotime($create_time);
 		
 		$complaint_ids=implode(",",$tousuData->tousu);
 		
