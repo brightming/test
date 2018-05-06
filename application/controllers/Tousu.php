@@ -22,8 +22,6 @@ public function addTousuNoPict(){
 	$rws_post = $GLOBALS['HTTP_RAW_POST_DATA'];
 	$mypost = json_decode($rws_post);
 	$openId=$mypost->openId;
-	$rws_post->picture_cnt=0;
-	$rws_post->picture_dir='';
 	
 	$userinfo = User::findUserByOpenId($openId);
 	$res=TousuModel::addUserTousu($userinfo->id,$mypost);
