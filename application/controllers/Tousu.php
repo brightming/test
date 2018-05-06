@@ -58,13 +58,17 @@ public function addTousu(){
 				echo "该文件夹已经有了";  
 		}  		
 		
-		$complaint_ids=$_POST['complain_ids'];
-		$this->json(['complaint_ids'=>$complaint_ids,'json_decode_ts'=>json_decode($_POST["tousu"]),'ts1'=>$_POST["tousu"],'json_encode_ts2'=>json_encode($_POST["tousu"]),'tableId'=>$_POST['tableId'],'openId'=>$_POST['openId']]);
+		$this->json([
+		'originalName'=>$file['name'],
+		'arr'=>explode(".", $file['name']);
+		]);
 		return;
-		   
+		
+		$complaint_ids=$_POST['complain_ids'];
+			   
 		//--save record---//	
 	//public static function addUserTousu2($input_customer_id,$extra_comment,$table_id,$store_id,$picture_cnt,$picture_dir,$tousu){
-		$res=TousuModel::addUserTousu2($userinfo->id,$_POST["extraDesc"],$_POST["tableId"],$_POST["storeId"],1,$file_path,json_decode($_POST["tousu"]));
+		$res=TousuModel::addUserTousu2($userinfo->id,$_POST["extraDesc"],$_POST["tableId"],$_POST["storeId"],1,$file_path,$complaint_ids);
 		
 		if($res==NULL){
 			$this->json(['code'=>-1,'desc'=>'fail']);

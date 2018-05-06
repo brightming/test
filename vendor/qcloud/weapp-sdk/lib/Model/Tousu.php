@@ -16,10 +16,9 @@ class Tousu
 	}
 	
 	
-	public static function addUserTousu2($input_customer_id,$extra_comment,$table_id,$store_id,$picture_cnt,$picture_dir,$tousu){
+	public static function addUserTousu2($input_customer_id,$extra_comment,$table_id,$store_id,$picture_cnt,$picture_dir,$complaint_ids){
 		$create_time=date('Y-m-d H:i:s');
 		$order_id=strtotime($create_time);
-		$complaint_ids=implode(",",$tousu);
 		
 		DB::insert('ComplaintRecord', compact('order_id','extra_comment','customer_id', 'complaint_ids', 'create_time', 'table_id', 'store_id','picture_cnt','picture_dir'));
 		$res = DB::row('ComplaintRecord', ['*'], compact('order_id','table_id'));
