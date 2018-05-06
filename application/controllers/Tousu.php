@@ -96,7 +96,8 @@ public function addTousu(){
 		'tmpname'=>$file['tmp_name'],
 		'destination'=>$destination,
 		'ok'=>$ok,
-		'name'=>$file['name'] 
+		'name'=>$file['name'] ,
+		'suffix'=>arr[1]
 		]);		
 	}
 }
