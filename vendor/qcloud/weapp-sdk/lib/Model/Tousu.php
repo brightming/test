@@ -69,4 +69,20 @@ class Tousu
 		
 	}
 	
+	/**
+	 *上传用户投诉后提交的订单和电话号码
+	*/
+	public static function addTousuDingdan($complain_id,$cellphone,$customer_id,$order_pict_dir,$order_pict_cnt){
+		
+		$create_time=date('Y-m-d H:i:s');
+		DB::insert('ComplainAndOrderPicture', compact('complain_id','cellphone','customer_id', 'order_pict_dir', 'order_pict_cnt'));
+		$res = DB::row('ComplainAndOrderPicture', ['*'], compact('create_time','customer_id'));
+		
+		
+		return $res;
+		
+		
+	}
+	
+	
 }
