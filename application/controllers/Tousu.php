@@ -37,20 +37,28 @@ public function addTousu(){
 		
 		$uri = $_SERVER['REQUEST_URI']; 
 		
-		$rws_post = $GLOBALS['HTTP_RAW_POST_DATA'];
+		//$rws_post = $GLOBALS['HTTP_RAW_POST_DATA'];
+		$rws_post = $_SERVER['formData']; 
 		$mypost = json_decode($rws_post);
 		
 			
 		$file = $_FILES['upict']; // 
 		$tmpPath=$file['tmp_name'];
 		
-		$destination='1.jpg';
-		move_uploaded_file($tmpPath, $destination);  
+		
+		//$uploaddir = $_SERVER['DOCUMENTROOT']."/uploads/";
+		var ok=false;
+		$destination=$_SERVER['DOCUMENTROOT'].'/1.jpg';
+		if(move_uploaded_file($_FILES['upict']['tmpname'], $destination)){
+			ok=true;
+		}
 		
 		$this->json([
 		'type'=>$file['type'],
 		'tmpname'=>$file['tmp_name'],
-		'$destination'=>$destination
+		'destination'=>$destination,
+		'documentroot'=>$_SERVER['DOCUMENTROOT'],
+		'ok'=>ok
 		]);
 		
 			
