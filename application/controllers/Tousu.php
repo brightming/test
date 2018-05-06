@@ -40,27 +40,63 @@ public function addTousu(){
 		//$rws_post = $GLOBALS['HTTP_RAW_POST_DATA'];
 		
 		$openId=$_POST["openId"];
+	
+		$datas=stdclass();
+		$userinfo = User::findUserByOpenId($openId);
 		
-			
+		
+		
+		//-------------create files dir -----------------//
 		$file = $_FILES['upict']; // 
 		$tmpPath=$file['tmp_name'];
+		$dir='.uploads/'
+		//按照年/月/日创建文件夹
+		$file_path="$dir".'/'.date("Y").'/'.date("m").'/'.date("d"); 
+        if(!is_dir($file_path)){  
+             if (mkdir($file_path,755,true)) {  
+                  echo "创建递归文件夹成功";  
+             }else{  
+                 echo "创建文件夹失败";  
+             }  
+		}else{  
+				echo "该文件夹已经有了";  
+		}  		
 		
+		$datas->extra_comment=$_POST["extraDesc"];
+		$datas->table_id=$_POST["tableId"];
+		$datas->store_id=$_POST["storeId"];
+		$datas->picture_cnt=1;
+		$datas->picture_dir=$file_path;
+		$datas->tousu=$_POST["tousu"];
+	    
+		//--save record---//
+		$res=TousuModel::addUserTousu($userinfo->id,$datas);
 		
-		//$uploaddir = $_SERVER['DOCUMENTROOT']."/uploads/";
+		if($res==NULL){
+			$this->json(['code'=>-1,'desc'=>'fail']);
+			return;
+		}
+		
+		//----------save file----//
 		$ok=false;
-		$destination='uploads/2.jpg';
+		
+		$originalName = $file['name']; 
+        $arr = explode(".", $originalName);
+		$dest_name="tousu-".$res->id.'-1'.$arr[1];
+		$destination=$file_path.'/'.$dest_name;
 		if(move_uploaded_file($tmpPath, $destination)){
 			$ok=true;
 		}
+		
+		//-----save to file record---//
+		
 		
 		$this->json([
 		'type'=>$file['type'],
 		'tmpname'=>$file['tmp_name'],
 		'destination'=>$destination,
 		'ok'=>$ok,
-		'filetype'=>$file['type'] 
-		]);
-		
-			
+		'name'=>$file['name'] 
+		]);		
 	}
 }
