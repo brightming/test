@@ -45,7 +45,7 @@ public function addTousu(){
 		//-------------create files dir -----------------//
 		$file = $_FILES['upict']; // 
 		$tmpPath=$file['tmp_name'];
-		$dir='.uploads/';
+		$dir='./uploads/';
 		//按照年/月/日创建文件夹
 		$file_path="$dir".'/'.date("Y").'/'.date("m").'/'.date("d"); 
         if(!is_dir($file_path)){  
@@ -58,15 +58,10 @@ public function addTousu(){
 				echo "该文件夹已经有了";  
 		}  		
 		
-		$datas->extra_comment=$_POST["extraDesc"];
-		$datas->table_id=$_POST["tableId"];
-		$datas->store_id=$_POST["storeId"];
-		$datas->picture_cnt=1;
-		$datas->picture_dir=$file_path;
-		$datas->tousu=$_POST["tousu"];
-	    
-		//--save record---//
-		$res=TousuModel::addUserTousu($userinfo->id,$datas);
+		   
+		//--save record---//	
+	//public static function addUserTousu2($input_customer_id,$extra_comment,$table_id,$store_id,$picture_cnt,$picture_dir,$tousu){
+		$res=TousuModel::addUserTousu2($userinfo->id,$_POST["extraDesc"],$_POST["tableId"],$_POST["storeId"],1,$file_path,json_decode($_POST["tousu"]));
 		
 		if($res==NULL){
 			$this->json(['code'=>-1,'desc'=>'fail']);
