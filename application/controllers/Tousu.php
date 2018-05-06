@@ -59,7 +59,7 @@ public function addTousu(){
 		//按照年/月/日创建文件夹
 		$file_path="$dir".'/'.date("Y").'/'.date("m").'/'.date("d");
 
-        $dir_ok=true		
+        $dir_ok=true;		
         if(!is_dir($file_path)){  
              if (mkdir($file_path,755,true)) {                    
              }else{  
