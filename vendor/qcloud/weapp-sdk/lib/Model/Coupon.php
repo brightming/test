@@ -53,6 +53,12 @@ class Coupon
 		
 	}
 	
+	//获取store_id对应抽奖设置
+	public static function getDrawCashSetting($use_store_id){
+		$sql="SELECT * FROM DrawCashSetting WHERE use_store_id=".$use_store_id ;
+		return DB::raw_select($sql);		
+	}
+	
 	/**
 	*  记录用户的抽奖行为
 	*/
