@@ -47,7 +47,7 @@ class User extends CI_Controller {
 		}else{
 			echo "cnt=".count($res);
 			foreach($res as $row){  
-			 echo 'store_id='.$row->store_id.'<br/>';  
+			 echo 'store_id='.$row->store_id.' create_time='.$row->create_time.'<br/>';  
 			}  
 			//$res2=json_encode($res);
             //echo $res2;
@@ -99,6 +99,15 @@ class User extends CI_Controller {
 		}
 		
 		//用户抽奖的记录
+		$customer_id=$userinfo.id;
+		$res=CouponModel::getUseDrawCacheRecToday($customer_id,$storeId);
+		if(count($res)>0){
+			//判断时间段
+			foreach($res as $row){  
+			  $dotime=$row->create_time;
+			  
+			} 
+		}
 		
 		
 
