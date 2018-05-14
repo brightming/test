@@ -73,8 +73,7 @@ class Coupon
   
     //获取用户今天日期的现金抽奖记录
     public static function getUseDrawCacheRecToday($customer_id,$store_id){
-		$sql="SELECT * FROM CacheDrawRecord WHERE TO_DAYS(`create_time`) = TO_DAYS(NOW())";
-		$sql="select * from CacheDrawRecord where store_id=2";
+		$sql="SELECT * FROM CacheDrawRecord WHERE customer_id=".$customer_id . " and store_id=".$store_id." and TO_DAYS(`create_time`) = TO_DAYS(NOW())";
 		return DB::raw_select($sql);
 	}
   

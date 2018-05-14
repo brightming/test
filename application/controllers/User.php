@@ -39,8 +39,8 @@ class User extends CI_Controller {
 	
 	
 	public function getUserDrawMoneyRec(){
-		$customer_id=2;
-		$store_id=1;
+		$customer_id=1;
+		$store_id=2;
 		$res=CouponModel::getUseDrawCacheRecToday($customer_id,$store_id);
 		if($res==NULL){
 			echo 'no rec';
