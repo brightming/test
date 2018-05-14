@@ -77,7 +77,7 @@ class Coupon
 		$sql="select * from CacheDrawRecord where store_id=1";
 		$query=DB::getInstance()->query($sql);
 		$allResult = $query->fetchAll(PDO::FETCH_OBJ);
-		return $allResult;
+		return  $allResult === NULL ? [] : $allResult;;
 		
 	}
   
