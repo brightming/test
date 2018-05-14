@@ -43,9 +43,9 @@ class User extends CI_Controller {
 		$store_id=1;
 		$res=CouponModel::getUseDrawCacheRecToday($customer_id,$store_id);
 		if($res==NULL){
-			echo 'ok';
-		}else{
 			echo 'no rec';
+		}else{
+			echo 'ok';
 			
 		}
 		//$res2=json_encode($res);
