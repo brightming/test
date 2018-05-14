@@ -45,9 +45,12 @@ class User extends CI_Controller {
 		if($res==NULL){
 			echo 'no rec';
 		}else{
+			echo "cnt=".count($res)
 			foreach($res as $row){  
 			 echo $row['store_id'].'<br/>';  
 			}  
+			$res2=json_encode($res);
+            echo $res2;
 			
 		}
 		//$res2=json_encode($res);
