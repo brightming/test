@@ -47,7 +47,7 @@ class User extends CI_Controller {
 		}else{
 			echo "cnt=".count($res);
 			foreach($res as $row){  
-			 echo 'store_id='.$row['store_id'].'<br/>';  
+			 echo 'store_id='.$row->store_id.'<br/>';  
 			}  
 			//$res2=json_encode($res);
             //echo $res2;
