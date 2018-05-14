@@ -75,10 +75,7 @@ class Coupon
     public static function getUseDrawCacheRecToday($customer_id,$store_id){
 		$sql="SELECT * FROM CacheDrawRecord WHERE TO_DAYS(`create_time`) = TO_DAYS(NOW())";
 		$sql="select * from CacheDrawRecord where store_id=1";
-		$query=DB::getInstance()->query($sql);
-		$allResult = $query->fetchAll(PDO::FETCH_OBJ);
-		return  $allResult === NULL ? [] : $allResult;;
-		
+		return DB::raw_select($sql);
 	}
   
     

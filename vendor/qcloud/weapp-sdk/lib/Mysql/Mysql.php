@@ -191,6 +191,12 @@ class Mysql
             throw new Exception(Constants::E_EXEC_SQL_QUERY . ': ' . $error[2]);
         }
     }
+	
+	public static function raw_select($sql){	
+		$query=self::getInstance()->query($sql);
+		$allResult = $query->fetchAll(PDO::FETCH_OBJ);
+		return  $allResult === NULL ? [] : $allResult;
+	}
 
     /**
      * 按照指定的规则处理条件数组
