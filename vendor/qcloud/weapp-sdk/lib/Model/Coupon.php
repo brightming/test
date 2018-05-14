@@ -42,6 +42,17 @@ class Coupon
 		
 	}
 	
+		
+	/**
+	* 使用优惠券
+	*
+	*/
+	public static function useCouponStatus($customer_id,$couponId,$options){
+		
+		
+		
+	}
+	
 	/**
 	*  记录用户的抽奖行为
 	*/
@@ -60,16 +71,16 @@ class Coupon
 		
 	}
   
-    
-	
-	/**
-	* 使用优惠券
-	*
-	*/
-	public static function useCouponStatus($customer_id,$couponId,$options){
-		
-		
+    //获取用户今天日期的现金抽奖记录
+    public static function getUseDrawCacheRecToday($customer_id,$store_id){
+		$sql="SELECT * FROM CacheDrawRecord WHERE TO_DAYS(`create_time`) =". TO_DAYS(NOW());
+		$res=DB::getInstance->query($sql);
+		return $res;
 		
 	}
+  
+    
+    
+
 
 }
