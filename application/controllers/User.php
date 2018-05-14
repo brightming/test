@@ -36,6 +36,18 @@ class User extends CI_Controller {
 		
 		
 	}
+	
+	
+	public function getUserDrawMoneyRec(){
+		$customer_id=2;
+		$store_id=1;
+		$res=CouponModel::getUseDrawCacheRecToday($customer_id,$store_id);
+		$res2=json_encode($res);
+        echo $res2;		
+		
+		
+		
+	}
 
 	/**
 	* 判断某用户此时是否能抽奖
@@ -74,6 +86,9 @@ class User extends CI_Controller {
 			return;
 			
 		}
+		
+		//用户抽奖的记录
+		
 		
 
 
