@@ -104,7 +104,7 @@ class User extends CI_Controller {
 		//记录允许的时间段
 		
 		$valid_time_rgs=$oneset->valid_time_ranges;//9:00-12:00,17:00-19:00
-		$subrgs=explode(",",$valid_time);
+		$subrgs=explode(",",$valid_time_rgs);
 		
 		//判断当前属于哪个时间段
 		$inwhich=-1;
