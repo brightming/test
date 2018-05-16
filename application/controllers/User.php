@@ -65,16 +65,14 @@ class User extends CI_Controller {
 	*/
     public function canDrawMoney(){
          //token是判断的依
+		 //$this->input->get_post  对于post或test提交的都可以获取
 		
-		$this->json(['postdata'=>$this->input->get_post('openId')]);
+		
+		$token=$this->input->get_post('token');
+		$storeId=$this->input->get_post('storeId');
+		$openId=$this->input->get_post('openId');
+		$this->json(['token'=>$token,'storeId'=>$storeId,'openId'=>$openId]);
 		return;
-		
-		
-		
-		$token=$mypost->token;
-		$storeId=$mypost->storeId;
-		$tableId=$mypost->tableId;
-		$openId=$mypost->openId;
 		
 		$userinfo = User::findUserByOpenId($openId);
 		
