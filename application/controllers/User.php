@@ -91,7 +91,7 @@ class User extends CI_Controller {
 		
 		//对比token
 		$oneset=$setting[0];
-		print_r("onset=".$oneset);
+		//print_r("onset=".$oneset);
 		if($token!=$oneset->token){
 			//用了过时的token
 			 $this->json([
