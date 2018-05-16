@@ -65,6 +65,9 @@ class User extends CI_Controller {
 	*/
     public function canDrawMoney(){
          //token是判断的依据
+		 $this->json(['postdata'=>"hr"]);
+		 return;
+		 
 		$rws_post = $GLOBALS['HTTP_RAW_POST_DATA'];
 		$mypost = json_decode($rws_post);
 		
