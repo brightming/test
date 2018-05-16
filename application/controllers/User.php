@@ -79,6 +79,7 @@ class User extends CI_Controller {
 		
 		//获取最新的token
 		$setting=CouponModel::getDrawCashSetting($storeId);
+		echo "setting.cnt=".count($setting);
 		if($setting==NULL){
 			//此店未设置抽奖
 			 $this->json([
