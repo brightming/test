@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 use \QCloud_WeApp_SDK\Auth\LoginService as LoginService;
 use QCloud_WeApp_SDK\Constants as Constants;
 use \QCloud_WeApp_SDK\Model\Coupon as CouponModel;
-use \QCloud_WeApp_SDK\Model\User as User;
+use \QCloud_WeApp_SDK\Model\User as UserModel;
 
 class User extends CI_Controller {
     public function index() {
@@ -75,7 +75,7 @@ class User extends CI_Controller {
 		$this->json(['token'=>$token,'storeId'=>$storeId,'openId'=>$openId]);
 		//return;
 		
-		$userinfo = User::findUserByOpenId($openId);
+		$userinfo = UserModel::findUserByOpenId($openId);
 		
 		//获取最新的token
 		$setting=CouponModel::getDrawCashSetting($storeId);
