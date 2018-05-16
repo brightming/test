@@ -68,6 +68,10 @@ class User extends CI_Controller {
 		$rws_post = $GLOBALS['HTTP_RAW_POST_DATA'];
 		$mypost = json_decode($rws_post);
 		
+		$this->json(['postdata'=>$mypost]);
+		return;
+		
+		
 		
 		$token=$mypost->token;
 		$storeId=$mypost->storeId;
