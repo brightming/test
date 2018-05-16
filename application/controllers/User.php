@@ -80,7 +80,7 @@ class User extends CI_Controller {
 		//获取最新的token
 		$setting=CouponModel::getDrawCashSetting($storeId);
 		echo "setting.cnt=".count($setting);
-		if($setting==NULL){
+		if($setting==NULL || count($setting)==0){
 			//此店未设置抽奖
 			 $this->json([
                 'code' => -1,
@@ -90,7 +90,9 @@ class User extends CI_Controller {
 		}
 		
 		//对比token
-		if($token!=$setting->token){
+		$oneset=$setting[0];
+		echo "onset=".$oneset;
+		if($token!=$oneset->token){
 			//用了过时的token
 			 $this->json([
                 'code' => -2,
@@ -100,7 +102,7 @@ class User extends CI_Controller {
 		}
 		
 		//记录允许的时间段
-		$oneset=$setting[0];
+		
 		$valid_time_rgs=$oneset->valid_time_ranges;//9:00-12:00,17:00-19:00
 		$subrgs=explode(",",$valid_time);
 		
