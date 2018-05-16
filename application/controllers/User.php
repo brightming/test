@@ -96,7 +96,7 @@ class User extends CI_Controller {
 			//用了过时的token
 			 $this->json([
                 'code' => -2,
-                'desc' =>'无效凭证'
+                'desc' =>'请联系服务员扫描抽奖二维码'
             ]);
 			return;
 		}
