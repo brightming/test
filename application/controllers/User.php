@@ -72,7 +72,7 @@ class User extends CI_Controller {
 		$storeId=$this->input->get_post('storeId');
 		$openId=$this->input->get_post('openId');
 		$this->json(['token'=>$token,'storeId'=>$storeId,'openId'=>$openId]);
-		return;
+		//return;
 		
 		$userinfo = User::findUserByOpenId($openId);
 		
