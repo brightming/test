@@ -79,7 +79,7 @@ class User extends CI_Controller {
 		
 		//获取最新的token
 		$setting=CouponModel::getDrawCashSetting($storeId);
-		echo "setting.cnt=".count($setting);
+
 		if($setting==NULL || count($setting)==0){
 			//此店未设置抽奖
 			 $this->json([
@@ -131,6 +131,13 @@ class User extends CI_Controller {
 		}
 		
 		//用户抽奖的记录
+		if($userinfo==NULL){
+			$this->json([
+					'code' => -4,
+					'desc' =>'用户未登录！'
+				]);
+				return;
+		}
 		$customer_id=$userinfo.id;
 		$res=CouponModel::getUseDrawCacheRecToday($customer_id,$storeId);
 		if(count($res)>0){		
@@ -145,7 +152,7 @@ class User extends CI_Controller {
 					$timeEnd1 = strtotime($checkDayStr . "$rrgg[1]" . ":00");   
 					if ($histtime >= $timeBegin1 && $histtime <= $timeEnd1 && $idx==$inwhich) { 
 						$this->json([
-							'code' => -4,
+							'code' => -5,
 							'desc' =>'同一段时间只允许一次抽奖！'
 						]);
 						return;  
