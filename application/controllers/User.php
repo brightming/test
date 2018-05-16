@@ -64,14 +64,9 @@ class User extends CI_Controller {
 	* 判断某用户此时是否能抽奖
 	*/
     public function canDrawMoney(){
-         //token是判断的依据
-		 $this->json(['postdata'=>"hr"]);
-		 return;
-		 
-		$rws_post = $GLOBALS['HTTP_RAW_POST_DATA'];
-		$mypost = json_decode($rws_post);
+         //token是判断的依
 		
-		$this->json(['postdata'=>$mypost]);
+		$this->json(['postdata'=>$this->input->get_post('openId')]);
 		return;
 		
 		
