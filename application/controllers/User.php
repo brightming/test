@@ -138,7 +138,7 @@ class User extends CI_Controller {
 				]);
 				return;
 		}
-		$customer_id=$userinfo.id;
+		$customer_id=$userinfo->id;
 		$res=CouponModel::getUseDrawCacheRecToday($customer_id,$storeId);
 		if(count($res)>0){		
 			//判断时间段
