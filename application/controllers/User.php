@@ -183,7 +183,7 @@ class User extends CI_Controller {
 		$userinfo = UserModel::findUserByUnionId($unionId);
 		$customer_id=$userinfo->id;
 		
-		$sql=' select t1.id ,t1.remark_time as createTime,t1.extra_remark_desc as extraDesc,Store.name as storeName from (select * from CustomerRemarkRecord where customer_id='.$customer_id.' limit '.$offset.','.$cnt.') t1 left join Store on t1.storeId=Store.id;'
+		$sql=' select t1.id ,t1.remark_time as createTime,t1.extra_remark_desc as extraDesc,Store.name as storeName from (select * from CustomerRemarkRecord where customer_id='.$customer_id.' limit '.$offset.','.$cnt.') t1 left join Store on t1.storeId=Store.id;';
 		$recs=commonModel::raw_sql_select($sql);
 		
 			
@@ -204,7 +204,7 @@ class User extends CI_Controller {
 		$userinfo = UserModel::findUserByUnionId($unionId);
 		$customer_id=$userinfo->id;
 		
-		$sql='  select t2.seq as seq,t2.content ,t1.remark_score as score from (select * from CustomerRemarkDetail where customer_remark_rec_id='.$remark_rec_id.') t1 left join RemarkTemplate t2 on t1.remark_template_id=t2.id;'
+		$sql='  select t2.seq as seq,t2.content ,t1.remark_score as score from (select * from CustomerRemarkDetail where customer_remark_rec_id='.$remark_rec_id.') t1 left join RemarkTemplate t2 on t1.remark_template_id=t2.id;';
 		$recs=commonModel::raw_sql_select($sql);
 		
 		$this->json([
