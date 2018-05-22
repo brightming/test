@@ -12,7 +12,7 @@ use \QCloud_WeApp_SDK\Model\User as User;
 class Remark extends CI_Controller {
 public function getRemarkTemplate() {
         $result = Remark::getRemarkTemplateInfo();
-		$this->json({'data':$result,'code':0,'msg':'getRemarkTemplate'});
+		$this->json(['data'=>$result,'code'=>0,'msg'=>'getRemarkTemplate']);
 }
 
 
