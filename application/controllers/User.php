@@ -5,6 +5,7 @@ use \QCloud_WeApp_SDK\Auth\LoginService as LoginService;
 use QCloud_WeApp_SDK\Constants as Constants;
 use \QCloud_WeApp_SDK\Model\Coupon as CouponModel;
 use \QCloud_WeApp_SDK\Model\User as UserModel;
+use \QCloud_WeApp_SDK\Model\Common as commonModel;
 
 class User extends CI_Controller {
     public function index() {
@@ -167,9 +168,49 @@ class User extends CI_Controller {
 			'desc' =>'可以抽奖！'
 		]);
 		
-		
-
-
     }	
 
+}
+
+
+//分页获取指定用户的点评信息
+public function  getMyRemark(){
+	$unionId=$this->input->get_post('unionId');
+	$offset=$this->input->get_post('offset');
+	$cnt=$this->input->get_post('cnt');
+	$needDetail=$this->input->get_post('needDetail');
+	
+	//get customer_id
+	$userinfo = UserModel::findUserByUnionId($unionId);
+	$customer_id=$userinfo->id;
+	
+	$sql=' select t1.id ,t1.remark_time as createTime,t1.extra_remark_desc as extraDesc,Store.name as storeName from (select * from CustomerRemarkRecord where customer_id='.$customer_id.' limit '.$offset.','.$cnt.') t1 left join Store on t1.storeId=Store.id;'
+	$recs=commonModel::raw_sql_select($sql);
+	
+		
+	$this->json([
+			'code' => 0,
+			'desc' =>'',
+			'data'=>$recs
+		]);
+}
+
+
+//分页获取指定用户的点评信息
+public function  getRemarkDetail(){
+	$unionId=$this->input->get_post('unionId');
+	$remark_rec_id=$input->get_post('remark_rec_id');
+	
+	//get customer_id
+	$userinfo = UserModel::findUserByUnionId($unionId);
+	$customer_id=$userinfo->id;
+	
+	$sql='  select t2.seq as seq,t2.content ,t1.remark_score as score from (select * from CustomerRemarkDetail where customer_remark_rec_id='.$remark_rec_id.') t1 left join RemarkTemplate t2 on t1.remark_template_id=t2.id;'
+	$recs=commonModel::raw_sql_select($sql);
+	
+	$this->json([
+			'code' => 0,
+			'desc' =>'',
+			'data'=>$recs
+		]);
 }

@@ -33,5 +33,7 @@ class User
 	public static function findUserByOpenId ($open_id) {
         return DB::row('cSessionInfo', ['*'], compact('open_id'));
     }
-	
+	public static function findUserByUnionId ($unionId) {
+        return DB::row('cSessionInfo', ['*'], compact('unionId'));
+    }
 }
