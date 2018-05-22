@@ -184,7 +184,7 @@ class User extends CI_Controller {
 		$customer_id=$userinfo->id;
 		
 		$sql=' select t1.id ,t1.remark_time as createTime,t1.extra_remark_desc as extraDesc,Store.name as storeName from (select * from CustomerRemarkRecord where customer_id='.$customer_id.' limit '.$offset.','.$cnt.') t1 left join Store on t1.storeId=Store.id;';
-		ccho $sql;
+		echo $sql;
 		$recs=commonModel::raw_sql_select($sql);
 		
 			
