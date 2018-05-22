@@ -199,7 +199,7 @@ class User extends CI_Controller {
 	//分页获取指定用户的点评信息
 	public function  getRemarkDetail(){
 		$unionId=$this->input->get_post('unionId');
-		$remark_rec_id=$input->get_post('remark_rec_id');
+		$remark_rec_id=$this->$input->get_post('remark_rec_id');
 		
 		//get customer_id
 		$userinfo = UserModel::findUserByUnionId($unionId);
