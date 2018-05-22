@@ -200,7 +200,7 @@ class User extends CI_Controller {
 	public function  getRemarkDetail(){
 		$unionId=$this->input->get_post('unionId');
 		$remark_rec_id=$this->input->get_post('remark_rec_id');
-		
+		 
 		//get customer_id
 		$userinfo = UserModel::findUserByUnionId($unionId);
 		$customer_id=$userinfo->id;
