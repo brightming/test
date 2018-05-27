@@ -31,9 +31,19 @@ class Remark
 	}
 	
 	/* 获取用户最新的点评 */
-	public static function getUserLatestRemark($customerId,$storeId,$tableId){
+	public static function getUserLatestRemark($customerId,$storeId='',$tableId=''){
+            if($storeId!="" && $tableId!=""){
 		return DB::select('CustomerRemarkRecord',['*'],['customer_id'=>$customerId ,'tableId'=>$tableId ,'storeId'=>$storeId],'and','order by remark_time desc limit 1');		
+            }else if($storeId!="" && $tableId==""){
+                return DB::select('CustomerRemarkRecord',['*'],['customer_id'=>$customerId ,'storeId'=>$storeId],'and','order by remark_time desc limit 1');
+            }else if($storeId=="" && $tableId!=""){
+                return DB::select('CustomerRemarkRecord',['*'],['customer_id'=>$customerId ,'tableId'=>$tableId ],'and','order by remark_time desc limit 1');
+            }else{
+                return DB::select('CustomerRemarkRecord',['*'],['customer_id'=>$customerId],'and','order by remark_time desc limit 1');  
+            }
 	}
+        
+       
 	
 	/**
 	 * customer_id是用户的数据库id

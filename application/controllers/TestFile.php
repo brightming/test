@@ -20,5 +20,13 @@ class TestFile extends CI_Controller {
             ]);
         }
     }
+    
+    public static function test_accept_params(){
+        $met = $this->input->method();
+        if (strcasecmp($met, "post") != 0) {
+            $this->json(["code" => 600, "msg" => "check_remark_setting.expected post method"]);
+            return;
+        }
+    }
 
 }

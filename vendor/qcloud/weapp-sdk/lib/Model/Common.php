@@ -47,6 +47,128 @@ class Common {
         return $obj;
     }
 
+    /**
+     * if cmp_date is between beg_date and end_date
+     * @param type $beg_date
+     * string: yyyy/MM/dd or YYY-MM-dd
+     * @param type $end_date
+     * @param type $cmp_date
+     */
+    public static function between_date($beg_date, $end_date, $cmp_date) {
+        $a=get_date_beg_time($beg_date);
+        $b=get_date_beg_time($end_date);
+        $c=get_date_beg_time($cmp_date);
+        
+        if($a==-1 || $b==-1 || $c==-1){
+            return false;
+        }
+        if($c>=$a && $c<=$b){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    /**
+     * if time string is 2018-5-20 11:00:22 ,then will return 2018-5-20 00:00:00
+     * @param type $date_str
+     * YYYY-MM-dd or YYYY/MM/dd
+     */
+    public static function get_date_beg_time($date_str) {
+        if (strstr($date_str, ":")) {
+            $arr = explode(" ", $date_str);
+            if(count($arr)==0){
+                return -1;
+            }
+            $date_str2=$arr[0]." 00:00:00";
+            return strtotime($date_str2);
+        } else {
+            $date_str2 = $date_str . " 00:00:00";
+            return strtotime($date_str2);
+        }
+    }
+    
+    /**
+     * 比较一天之内的时间段
+     * @param type $rngs_str
+     * 9:00-12:00 18:00-22:00
+     * @param type $cmp_time
+     */
+    public static function between_time_ranges($rngs_str,$cmp_time){
+        if($rngs_str==""){
+            return false;
+        }
+        
+        $ct=strtotime($cmp_time);
+        $arr1= explode(" ", $rngs_str);
+        if(count($arr1)==0){
+            return false;
+        }
+        foreach($arr1 as $one){
+            $arr2=explode("-",$one);
+            if(count($arr2)!=2){
+                continue;
+            }
+            $t1=strtotime($arr2[0]);
+            $t2=strtotime($arr2[1]);
+            if($t1<=$ct && $t2>=$ct){
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    /**
+     * first find out in which range now time reside in,
+     * and check if the input cmp_time is within the same time range
+     * @param type $rngs_str
+     * @param type $cmp_time
+     */
+    public static function between_cur_time_range($rngs_str,$cmp_time){
+        if($rngs_str==""){
+            return false;
+        }    
+        $curtime= strtotime(date('H:i:s',time()));  
+        $ct=strtotime($cmp_time);     
+        $arr1= explode(" ", $rngs_str);
+        if(count($arr1)==0){
+            return false;
+        }
+        foreach($arr1 as $one){
+            $arr2=explode("-",$one);
+            if(count($arr2)!=2){
+                continue;
+            }
+            $t1=strtotime($arr2[0]);
+            $t2=strtotime($arr2[1]);
+            if($t1<=$curtime && $t2>=$curtime){
+               if($t1<=$ct && $t2>=$ct){
+                   return true;
+               }
+            }
+        }
+        
+        return false;
+    }
+    
+    public static function is_today($time_str){
+        $in_time= strtotime($time_str);
+        $curdate = date("Y/m/d");
+        
+        $b1=$curdate." 00:00:00";
+        $bt= strtotime($b1);
+        
+        $e1=$curdate." 23:59:59";
+        $et= strtotime($e1);
+        
+        if($in_time>=$bt && $in_time<=$et){
+            return true;
+        }
+        return false;
+        
+    }
+
     public static function raw_sql_select($sql) {
         return DB::raw_select($sql);
     }
