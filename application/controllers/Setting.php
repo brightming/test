@@ -16,7 +16,11 @@ class Setting extends CI_Controller {
      * post的方式接收用户的lng,lat,unionId
      */
     public function check_remark_setting() {
-        echo $this->input->method();
+        $met= $this->input->method();
+        if(strcasecmp($met,"post")!=0){
+            $this->json(["code"=>600,"msg"=>"check_remark_setting"]);
+            return;
+        }
     }
 
 }
