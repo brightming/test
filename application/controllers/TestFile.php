@@ -25,7 +25,7 @@ class TestFile extends CI_Controller {
         $met = $this->input->method();
         if (strcasecmp($met, "post") != 0) {
             $this->json(["code" => 600, "msg" => "check_remark_setting.expected post method"]);
-            return;
+           // return;
         }
         
         $name = $this->input->post('name');
