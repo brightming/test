@@ -8,6 +8,15 @@ use \Exception;
 
 class Common {
 
+    
+    public static function get_post_value($data,$property){
+        if(property_exists($data, $property)){
+            return $data->{$property};
+        }else{
+            return NULL;
+        }
+    }
+    
     /**
      * 数组 转 对象
      *
