@@ -2,11 +2,26 @@
 namespace QCloud_WeApp_SDK\Model;
 
 use QCloud_WeApp_SDK\Mysql\Mysql as DB;
+use QCloud_WeApp_SDK\Model\Common as Common;
 use QCloud_WeApp_SDK\Constants;
 use \Exception;
 
 class Remark
 {
+    
+    
+    public static function addRemarkTemplate($remarkTemp){
+        $tableName="RemarkTemplate";
+        if(gettype($remarkTemp)=="object"){
+            $data=Common::object_to_array($remarkTemp);
+            return DB::insert($tableName, $data);
+        }else if(gettype($remarkTemp)=="array"){
+            return DB::insert($tableName, $remarkTemp);
+        }else{
+            return -1;
+        }
+        
+    }
 	/**
 	  * 获取全部的点评模板信息，以seq升序来排
 	  *
