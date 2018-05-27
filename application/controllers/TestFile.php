@@ -28,13 +28,15 @@ class TestFile extends CI_Controller {
         $met = $this->input->method();
         if (strcasecmp($met, "post") != 0) {
             $this->json(["code" => 600, "msg" => "check_remark_setting.expected post method"]);
-            return;
+           // return;
         }
 
-        $name = $this->input->post('name');
+       // $name = $this->input->post('name');
         //$this->json(["name"=>$name]);
 
         $rws_post = $GLOBALS['HTTP_RAW_POST_DATA'];
+        
+        $rws_post=$this->input->raw_input_stream;
         $mypost = json_decode($rws_post);
         $name2 =commonModel::get_post_value($mypost, "name");
         $age =commonModel::get_post_value($mypost, "age");
