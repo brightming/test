@@ -24,10 +24,16 @@ class Setting extends CI_Controller {
             $this->json(["code" => 600, "msg" => "check_remark_setting.expected post method"]);
             return;
         }
-        $lng = $this->input->post('lng');
-        $lat = $this->input->post('lat');
-        $unionId = $this->input->post('unionId');
-        $storeId = $this->input->post('storeId');
+        $cont=$this->input->get_request_header('Content-Type', TRUE);
+        $inputs=$this->input;
+        if(strcasecmp($cont, "application/json")==0){
+            $raw=$GLOBALS['HTTP_RAW_POST_DATA'];
+            $inputs= json_decode($raw);
+        }
+        $lng = commonModel::get_post_value($inputs,'lng');
+        $lat = commonModel::get_post_value($inputs,'lat');
+        $unionId = commonModel::get_post_value($inputs,'unionId');
+        $storeId = commonModel::get_post_value($inputs,'storeId');
 
         if ($lng == NULL || $lat == NULL || $unionId == NULL || $storeId == NULL) {
             $this->json(["code" => -6, "msg" => "check_remark_setting.param not enough"]);

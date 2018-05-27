@@ -35,13 +35,17 @@ class TestFile extends CI_Controller {
         //$this->json(["name"=>$name]);
 
        // $rws_post = $GLOBALS['HTTP_RAW_POST_DATA'];
+ 
         $cont=$this->input->get_request_header('Content-Type', TRUE);
-        
-        $rws_post=$this->input->raw_input_stream;
-        $mypost = json_decode($rws_post);
-        $name2 =commonModel::get_post_value($mypost, "name");
-        $age =commonModel::get_post_value($mypost, "age");
-        $a=commonModel::get_post_value($mypost, "ok");
+        $inputs=$this->input;
+        if(strcasecmp($cont, "application/json")==0){
+            $raw=$GLOBALS['HTTP_RAW_POST_DATA'];
+            $inputs= json_decode($raw);
+        }
+
+        $name2 =commonModel::get_post_value($inputs, "name");
+        $age =commonModel::get_post_value($inputs, "age");
+        $a=commonModel::get_post_value($inputs, "ok");
         
         $this->json(["name" => $name2,'age'=>$age,'a'=>$a,'conttype'=>$cont]);
     }
