@@ -37,8 +37,12 @@ class TestFile extends CI_Controller {
         $mypost = json_decode($rws_post);
         $name2 = $mypost->{'name'};
         $age = $mypost->{'age'};
-        $a = $mypost->{'ok'};
-
+        if(property_exists($mypost,"ok")){
+            $a = $mypost->{'ok'};
+        }else{
+            $a="no";
+        }
+        
         $this->json(["name" => $name2,'age'=>$age,'a'=>$a]);
     }
 
