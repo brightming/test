@@ -35,6 +35,7 @@ class TestFile extends CI_Controller {
         //$this->json(["name"=>$name]);
 
        // $rws_post = $GLOBALS['HTTP_RAW_POST_DATA'];
+        $cont=$this->input->get_request_header('Content-Type', TRUE);
         
         $rws_post=$this->input->raw_input_stream;
         $mypost = json_decode($rws_post);
@@ -42,7 +43,7 @@ class TestFile extends CI_Controller {
         $age =commonModel::get_post_value($mypost, "age");
         $a=commonModel::get_post_value($mypost, "ok");
         
-        $this->json(["name" => $name2,'age'=>$age,'a'=>$a]);
+        $this->json(["name" => $name2,'age'=>$age,'a'=>$a,'conttype'=>$cont]);
     }
 
 }
