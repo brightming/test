@@ -29,7 +29,12 @@ class TestFile extends CI_Controller {
         }
         
         $name = $this->input->post('name');
-        $this->json(["name"=>$name]);
+        //$this->json(["name"=>$name]);
+        
+        $rws_post = $GLOBALS['HTTP_RAW_POST_DATA'];
+        $mypost = json_decode($rws_post);
+        $name2=$mypost->name;
+        $this->json(["name"=>$name2]);
     }
 
 }
