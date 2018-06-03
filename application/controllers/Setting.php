@@ -245,4 +245,11 @@ class Setting extends CI_Controller {
         //---user has do it before---//
 
     }
+    
+    /**
+     * 获取抽奖的设置情况
+     */
+    public function getVoucherSetting(){
+        
+    }
 }

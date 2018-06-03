@@ -56,18 +56,19 @@ class Remark {
         $extra_remark_desc = $remarkData->extraDesc;
         $tableId = $remarkData->tableId;
         $storeId = $remarkData->storeId;
+        $remarks=json_encode($remarkData->scores);
 
-        DB::insert('CustomerRemarkRecord', compact('customer_id', 'remark_time', 'order_id', 'extra_remark_desc', 'tableId', 'storeId'));
+        DB::insert('CustomerRemarkRecord', compact('customer_id', 'remark_time', 'order_id', 'extra_remark_desc', 'tableId', 'storeId','remarks'));
         $res = DB::row('CustomerRemarkRecord', ['*'], compact('order_id', 'tableId'));
 
-        $customer_remark_rec_id = $res->id;
+//        $customer_remark_rec_id = $res->id;
 
-        //插入CustomerRemarkDetail
-        foreach ($remarkData->scores as $scoreItem) {
-            $remark_template_id = $scoreItem->remarkTempId;
-            $remark_score = $scoreItem->score;
-            DB::insert('CustomerRemarkDetail', compact('customer_remark_rec_id', 'remark_template_id', 'remark_score'));
-        }
+//        //插入CustomerRemarkDetail
+//        foreach ($remarkData->scores as $scoreItem) {
+//            $remark_template_id = $scoreItem->remarkTempId;
+//            $remark_score = $scoreItem->score;
+//            DB::insert('CustomerRemarkDetail', compact('customer_remark_rec_id', 'remark_template_id', 'remark_score'));
+//        }
 
         return $res;
     }
@@ -93,41 +94,70 @@ class Remark {
         $token = commonModel::get_obj_value($inputs, 'token');
         $storeId = commonModel::get_obj_value($inputs, 'storeId');
         $tableId = commonModel::get_obj_value($inputs, 'tableId');
-        $token=commonModel::get_obj_value($inputs, 'token');
-        
-        
-        if($storeId==NULL || $tableId==NULL||$token==NULL){
+        $token = commonModel::get_obj_value($inputs, 'token');
+
+
+        if ($storeId == NULL || $tableId == NULL || $token == NULL) {
             $this->json(["code" => -1, "msg" => "getAllVoucherOneTable.not enough params"]);
             return;
         }
-        
+
         //unionId to customer_id
-        
-        
         //获取同个分店，同张桌，对应id前后时间的记录
-        $sql="select * from CustomerLuckyRecord where id=$token";
-        $one=DB::raw($sql);
-        if($one==NULL){
+        $sql = "select * from CustomerLuckyRecord where id=$token";
+        $one = DB::raw($sql);
+        if ($one == NULL) {
             $this->json(["code" => -2, "msg" => "getAllVoucherOneTable.token is invalid"]);
             return;
         }
-        if($one->{"customer_id"}!=$customer_id || $one->{"table_id"}!=$tableId || $one->{"store_id"}!=$storeId){
+        if ($one->{"customer_id"} != $customer_id || $one->{"table_id"} != $tableId || $one->{"store_id"} != $storeId) {
             $this->json(["code" => -3, "msg" => "getAllVoucherOneTable.token is invalid"]);
             return;
         }
-        
-        $remark_time=strtotime($one->{"lucky_time"});
-        $beg=lucky_time-10*60;
-        $end=lucky_time+10*60;
-        
-        $beg_str=date('YYYY-m-d H:i:s',$beg);
-        $end_str=date("YYYY-m-d H:i:s",$end);
-        
-        $sql="select b.* from (select id ,lucky_time from CustomerLuckyRecord where table_id=$tableId and store_id=$storeId and lucky_time>='$beg_str' and lucky_time<=$end_str) as a
+
+        $remark_time = strtotime($one->{"lucky_time"});
+        $beg = lucky_time - 10 * 60;
+        $end = lucky_time + 10 * 60;
+
+        $beg_str = date('YYYY-m-d H:i:s', $beg);
+        $end_str = date("YYYY-m-d H:i:s", $end);
+
+        $sql = "select b.* from (select id ,lucky_time from CustomerLuckyRecord where table_id=$tableId and store_id=$storeId and lucky_time>='$beg_str' and lucky_time<=$end_str) as a
             inner join (select * from Coupon where create_time>='$beg_str' and create_time<='$end_str') as b on a.create_id=b.id";
-        $res=DB::raw_select($sql);
-            
-        
+        $res = DB::raw_select($sql);
+    }
+
+    /**
+     * 计算用户点评的总数
+     * @param type $customer_id
+     */
+    public static function getUerRemarkCnt($customer_id) {
+        $sql = "select count(id) from CustomerRemarkRecord where customer_id=$customer_id";
+        $res = DB::raw_select($sql);
+        if ($res == NULL || count($res) == 0) {
+            return 0;
+        } else {
+            return $res[0]->cnt;
+        }
+    }
+
+    /**
+     * 分页获取用户的点评信息
+     * @param type $customer_id
+     * @param type $offset
+     * @param type $cnt
+     */
+    public static function getUserRemarkByPages($customer_id, $offset, $cnt, $conditions = "") {
+        if ($offset < 0 || $cnt <= 0) {
+            return [];
+        }
+        $sql = "select * from CustomerRemarkRecord where customer_id=$customer_id  ";
+        if ($conditions != "") {
+            $sql = $sql . " and " . $conditions;
+        }
+        $sql = $sql . " order by remark_time desc limit $offset,$cnt";
+        $res = DB::raw_select($sql);
+        return $res;
     }
 
 }

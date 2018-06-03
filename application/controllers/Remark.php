@@ -15,7 +15,7 @@ use QCloud_WeApp_SDK\FunctionCodeConstants as funCodeConst;
 class Remark extends CI_Controller {
 
     public function getRemarkTemplate() {
-        
+
         $met = $this->input->method();
         if (strcasecmp($met, "post") != 0) {
             $this->json(["code" => funCodeConst::NEED_POST_METHOD['code'], "msg" => __FUNCTION__ . "." . funCodeConst::NEED_POST_METHOD['msg']]);
@@ -33,28 +33,38 @@ class Remark extends CI_Controller {
         $unionId = commonModel::get_obj_value($inputs, 'unionId');
         $storeId = commonModel::get_obj_value($inputs, 'storeId');
         $tableId = commonModel::get_obj_value($inputs, 'tableId');
-        
+
         $result = remarkModel::getRemarkTemplateInfo();
         $this->json(['data' => $result, 'code' => 0, 'msg' => 'getRemarkTemplate']);
     }
 
     public function addRemark() {
 
+        $met = $this->input->method();
+        if (strcasecmp($met, "post") != 0) {
+            $this->json(["code" => funCodeConst::NEED_POST_METHOD['code'], "msg" => __FUNCTION__ . "." . funCodeConst::NEED_POST_METHOD['msg']]);
+            return;
+        }
+
+        $cont = $this->input->get_request_header('Content-Type', TRUE);
+        $inputs = $this->input;
+        if (strcasecmp($cont, "application/json") == 0) {
+            $raw = $GLOBALS['HTTP_RAW_POST_DATA'];
+            $inputs = json_decode($raw);
+        }
+        $lng = commonModel::get_obj_value($inputs, 'lng');
+        $lat = commonModel::get_obj_value($inputs, 'lat');
+        $unionId = commonModel::get_obj_value($inputs, 'unionId');
+        $storeId = commonModel::get_obj_value($inputs, 'storeId');
+        $tableId = commonModel::get_obj_value($inputs, 'tableId');
+        $scores = commonModel::get_obj_value($inputs, 'scores');
+        $desc = commonModel::get_obj_value($inputs, 'extraDesc');
+
+
         $uri = $_SERVER['REQUEST_URI'];
 
-        $rws_post = $GLOBALS['HTTP_RAW_POST_DATA'];
-        $mypost = json_decode($rws_post);
-
-
-        $desc = $mypost->extraDesc;
-        $scores = $mypost->scores;
-        $storeId = $mypost->storeId;
-        $tableId = $mypost->tableId;
-        $openId = $mypost->openId;
-
-
         //查看这个openid的用户，对于这个店的这个桌子的点评，最近的一次是在什么时候，如果相隔不超过1小时，则拒绝评论
-        $userinfo = userModel::findUserByOpenId($openId);
+        $userinfo = userModel::findUserByUnionId($unionId);
         $latest = remarkModel::getUserLatestRemark($userinfo->id, $storeId, $tableId);
         $can_add = false;
         if ($latest == NULL) {
@@ -80,15 +90,85 @@ class Remark extends CI_Controller {
         }
         /**/
         $this->json([
-            'uri' => $uri,
-            'openId' => $userinfo->open_id,
-            'rws_post' => $rws_post,
-            'userinfo' => $userinfo,
-            'customer_id' => $userinfo->id,
-            'latest' => $latest,
-            'can_add' => $can_add,
-            'result' => $result
+            'token'=>$result->id
         ]);
     }
 
+    /**
+     * 统计点评总数
+     */
+    public function getUesrRemarkStatistics(){
+        $met = $this->input->method();
+        if (strcasecmp($met, "get") != 0) {
+            $this->json(["code" => funCodeConst::NEED_GET_METHOD['code'], "msg" => __FUNCTION__ . ".".funCodeConst::NEED_GET_METHOD['msg']]);
+            return;
+        }
+
+        $unionId = $this->input->get("unionId");
+      
+
+        if ($unionId == NULL  ) {
+            $this->json(["code" => funCodeConst::NOT_ENOUGH_PARAM['code'], "msg" => __FUNCTION__ . ".".funCodeConst::NOT_ENOUGH_PARAM['msg']]);
+            return;
+        }
+        
+         //check user
+        $user = UserModel::findUserByUnionId($unionId);
+        if ($user == NULL) {
+            $this->json(["code" => funCodeConst::INVALID_USER['code'], "msg" => __FUNCTION__ . ".".funCodeConst::INVALID_USER['msg']]);
+            return;
+        }
+        
+        $cnt= remarkModel::getUerRemarkCnt($user->id);
+        $this->json([
+            'code'=>0,
+            'msg'=>'',
+            'data'=>['totalCnt'=>$cnt]
+        ]);
+    }
+    
+    /**
+     * 分页获取点评
+     */
+    public function getUesrRemark(){
+         $met = $this->input->method();
+        if (strcasecmp($met, "get") != 0) {
+            $this->json(["code" => funCodeConst::NEED_GET_METHOD['code'], "msg" => __FUNCTION__ . ".".funCodeConst::NEED_GET_METHOD['msg']]);
+            return;
+        }
+
+        $unionId = $this->input->get("unionId");
+        $offset = $this->input->get("offset");
+        $cnt=$this->input->get("cnt");
+        
+        if($offset==NULL){
+            $offset=0;
+        }
+        if($cnt==NULL){
+            $cnt=5;
+        }
+
+        if ($unionId == NULL  ) {
+            $this->json(["code" => funCodeConst::NOT_ENOUGH_PARAM['code'], "msg" => __FUNCTION__ . ".".funCodeConst::NOT_ENOUGH_PARAM['msg']]);
+            return;
+        }
+        
+         //check user
+        $user = UserModel::findUserByUnionId($unionId);
+        if ($user == NULL) {
+            $this->json(["code" => funCodeConst::INVALID_USER['code'], "msg" => __FUNCTION__ . ".".funCodeConst::INVALID_USER['msg']]);
+            return;
+        }
+        
+        $res= remarkModel::getUserRemarkByPages($user->id,$offset,$cnt);
+        
+        $this->json([
+            'code'=>0,
+            'msg'=>'',
+            'data'=>[
+                'cnt'=>count($res),
+                'items'=>$res
+            ]
+        ]);
+    }
 }
