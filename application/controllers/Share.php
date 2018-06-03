@@ -332,6 +332,7 @@ class Share extends CI_Controller {
         }
         //if has totalCnt
         if ($totalCnt == NULL) {
+            echo "aaaa";
             $totalCnt = shareModel::countUesrShareRecNumberByUserId($user->id);
         }
         if ($totalCnt == 0) {
