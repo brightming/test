@@ -13,6 +13,25 @@ use \QCloud_WeApp_SDK\Model\User as User;
 class Remark extends CI_Controller {
 
     public function getRemarkTemplate() {
+        
+        $met = $this->input->method();
+        if (strcasecmp($met, "post") != 0) {
+            $this->json(["code" => funCodeConst::NEED_POST_METHOD['code'], "msg" => __FUNCTION__ . "." . funCodeConst::NEED_POST_METHOD['msg']]);
+            return;
+        }
+
+        $cont = $this->input->get_request_header('Content-Type', TRUE);
+        $inputs = $this->input;
+        if (strcasecmp($cont, "application/json") == 0) {
+            $raw = $GLOBALS['HTTP_RAW_POST_DATA'];
+            $inputs = json_decode($raw);
+        }
+        $lng = commonModel::get_obj_value($inputs, 'lng');
+        $lat = commonModel::get_obj_value($inputs, 'lat');
+        $unionId = commonModel::get_obj_value($inputs, 'unionId');
+        $storeId = commonModel::get_obj_value($inputs, 'storeId');
+        $tableId = commonModel::get_obj_value($inputs, 'tableId');
+        
         $result = remarkModel::getRemarkTemplateInfo();
         $this->json(['data' => $result, 'code' => 0, 'msg' => 'getRemarkTemplate']);
     }
