@@ -147,7 +147,9 @@ class Share {
     
     public static function countUesrShareRecNumberByUserId($customer_id){
         $sql="select count(id) as cnt from UserShareRec where customer_id=".$customer_id;
+        echo "sql=$sql  ";
         $res=DB::raw_select($sql);
+        echo "cnt=".count($res);
         $one=$res[0];
         return $one->cnt;
         
