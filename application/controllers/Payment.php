@@ -8,8 +8,6 @@
 
 use QCloud_WeApp_SDK\Model\Share as shareModel;
 use \QCloud_WeApp_SDK\Model\User as UserModel;
-use \QCloud_WeApp_SDK\Model\FileRecord as fileModel;
-use \QCloud_WeApp_SDK\Model\Store as storeModel;
 use QCloud_WeApp_SDK\Model\Coupon as couponModel;
 use QCloud_WeApp_SDK\Model\Payment as paymentModel;
 use QCloud_WeApp_SDK\FunctionCodeConstants as funCodeConst;
@@ -166,20 +164,20 @@ class Payment extends CI_Controller {
     }
     
     public function getUserPayStatistic(){
-         $met = $this->input->method();
+        $met = $this->input->method();
         if (strcasecmp($met, "get") != 0) {
-            $this->json(["code" => funCodeConst::NEED_GET_METHOD['code'], "msg" => __FUNCTION__ . ".".funCodeConst::NEED_GET_METHOD['msg']]);
+            $this->json(["code" => funCodeConst::NEED_GET_METHOD['code'], "msg" => __FUNCTION__ . "." . funCodeConst::NEED_GET_METHOD['msg']]);
             return;
         }
 
         $unionId = $this->input->get("unionId");
-         //check user
+        //check user
         $user = UserModel::findUserByUnionId($unionId);
         if ($user == NULL) {
-            $this->json(["code" => funCodeConst::INVALID_USER['code'], "msg" => __FUNCTION__ . ".".funCodeConst::INVALID_USER['msg']]);
+            $this->json(["code" => funCodeConst::INVALID_USER['code'], "msg" => __FUNCTION__ . "." . funCodeConst::INVALID_USER['msg']]);
             return;
         }
-        
+
         $res=paymentModel::getUserPayStatistic($user->id);
         $this->json([
             'code'=>0,

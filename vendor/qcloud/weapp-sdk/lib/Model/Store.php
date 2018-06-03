@@ -14,6 +14,22 @@ use QCloud_WeApp_SDK\Mysql\Mysql as DB;
  * @author gumh
  */
 class Store {
+    
+    
+    public static function getStoresByPage($offset,$cnt){
+        if($offset<0 || $cnt<=0){
+            return [];
+        }
+        $sql="select * from Store limit $offset,$cnt";
+        return DB::raw_select($sql);
+    }
+    
+    public static function getStoreCnt(){
+        $sql="select count(id) as cnt from Store";
+        $res=DB::raw_select($sql);
+        return $res[0]->cnt;
+    }
+    
     //put your code here
     public static function getAllStores(){
         
