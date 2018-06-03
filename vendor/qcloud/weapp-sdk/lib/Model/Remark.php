@@ -132,7 +132,7 @@ class Remark {
      * @param type $customer_id
      */
     public static function getUerRemarkCnt($customer_id) {
-        $sql = "select count(id) from CustomerRemarkRecord where customer_id=$customer_id";
+        $sql = "select count(id) as cnt from CustomerRemarkRecord where customer_id=$customer_id";
         $res = DB::raw_select($sql);
         if ($res == NULL || count($res) == 0) {
             return 0;
