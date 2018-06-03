@@ -241,11 +241,10 @@ class Share {
         }
         $sql="select * from Coupon where ".$conditions;
         if($order!=""){
-            $sql=$sql.$order." limit $offset,".$cnt;
+            $sql=$sql." ".$order." limit $offset,".$cnt;
         }else{
             $sql=$sql." limit $offset,".$cnt;
         }
-        echo "sql=$sql";
         return DB::raw_select($sql);
     }
 }

@@ -628,7 +628,7 @@ class Share extends CI_Controller {
             $conditions=$conditions." and is_used=0 and expired_time<'".date("Y-m-d H:i:s",time())."'";
         }
         
-        $order="order by create_time desc";
+        $order=" order by create_time desc";
         $items=shareModel::getCouponByConditionsByPage($conditions, $order, $offset, $cnt);
         
         if(count($items)==0){
