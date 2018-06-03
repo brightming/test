@@ -13,7 +13,7 @@ use \QCloud_WeApp_SDK\Model\FileRecord as FileRecordModel;
  */
 class Tousu extends CI_Controller {
 
-    public function index() {
+    public function getTousuTemplate() {
         //获取投诉模板
         $result = TousuModel::getTousuTemplateInfo();
         $this->json(['data' => $result]);
