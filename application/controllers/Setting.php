@@ -30,10 +30,10 @@ class Setting extends CI_Controller {
             $raw=$GLOBALS['HTTP_RAW_POST_DATA'];
             $inputs= json_decode($raw);
         }
-        $lng = commonModel::get_post_value($inputs,'lng');
-        $lat = commonModel::get_post_value($inputs,'lat');
-        $unionId = commonModel::get_post_value($inputs,'unionId');
-        $storeId = commonModel::get_post_value($inputs,'storeId');
+        $lng = commonModel::get_obj_value($inputs,'lng');
+        $lat = commonModel::get_obj_value($inputs,'lat');
+        $unionId = commonModel::get_obj_value($inputs,'unionId');
+        $storeId = commonModel::get_obj_value($inputs,'storeId');
 
         if ($lng == NULL || $lat == NULL || $unionId == NULL || $storeId == NULL) {
             $this->json(["code" => -6, "msg" => "check_remark_setting.param not enough"]);
@@ -46,7 +46,9 @@ class Setting extends CI_Controller {
             $this->json(["code" => -4, "msg" => "check_remark_setting.user not register in system "]);
             return;
         }
-        //---TODO check if allowed
+        //---TODO check if this user is allowed
+        
+
         //get all stores 
         $all_stores = storeModel::getAllStores();
         if (count($all_stores) == 0) {
@@ -153,13 +155,13 @@ class Setting extends CI_Controller {
                 $arr2 = $arr[1];
                 $rectime2 = strtotime($arr2);
                 if ($this_store_has_set == true) {//该门店有专门的设置
-                    if (commonModel::is_today($recdate) && commonModel::between_cur_time_range($rng_for_this_store, $rectime2) == true) {
+                    if (commonModel::is_today($recdate) && commonModel::same_with_curtime_range($rng_for_this_store, $rectime2) == true) {
                         //当前时间段已经点评过一次了
                         $this->json(["code" => -5, "msg" => "check_remark_setting.has dobe it "]);
                         return;
                     }
                 }else{
-                    if (commonModel::is_today($recdate) && commonModel::between_cur_time_range($rng_str_all, $rectime2) == true) {
+                    if (commonModel::is_today($recdate) && commonModel::same_with_curtime_range($rng_str_all, $rectime2) == true) {
                         //当前时间段已经点评过一次了
                         $this->json(["code" => -5, "msg" => "check_remark_setting.has dobe it "]);
                         return;
@@ -172,4 +174,75 @@ class Setting extends CI_Controller {
         return;
     }
 
+    
+    /**
+     * 抽现金的设置
+     * @return type
+     */
+    public function check_drawcash_setting(){
+        $met = $this->input->method();
+        if (strcasecmp($met, "post") != 0) {
+            $this->json(["code" => 600, "msg" => "check_drawcash_setting.expected post method"]);
+            return;
+        }
+        $cont=$this->input->get_request_header('Content-Type', TRUE);
+        $inputs=$this->input;
+        if(strcasecmp($cont, "application/json")==0){
+            $raw=$GLOBALS['HTTP_RAW_POST_DATA'];
+            $inputs= json_decode($raw);
+        }
+        $lng = commonModel::get_obj_value($inputs,'lng');
+        $lat = commonModel::get_obj_value($inputs,'lat');
+        $unionId = commonModel::get_obj_value($inputs,'unionId');
+        $token = commonModel::get_obj_value($inputs,'token');
+        $storeId = commonModel::get_obj_value($inputs,'storeId');
+        
+        
+        //--check lng lat and storeid
+        //get all stores 
+        $all_stores = storeModel::getAllStores();
+        if (count($all_stores) == 0) {
+            $this->json(["code" => -2, "msg" => "check_drawcash_setting.no stores"]);
+            return;
+        }
+
+        //check if any nearby store 
+        $allow_dist = 100;
+        $find_nearby = false;
+        foreach ($all_stores as $store) {
+            if ($store->id == $storeId) {
+                $dist = commonModel::get_distance($lng, $lat, $store->longitude, $store->latitude);
+                if ($dist <= $allow_dist ) {
+                    $find_nearby = true; //find any one
+                }
+                break;
+            }
+        }
+
+        if ($find_nearby == false) {
+            $this->json(["code" => -2, "msg" => "check_drawcash_setting.no nearby store"]);
+            return;
+        }
+        
+        //----check token --//
+        $setinfo=commonModel::getDrawCashSetting($storeId);
+        if($setinfo==NULL){
+            $this->json(["code" => -2, "msg" => "check_drawcash_setting.not start yet"]);
+            return;
+        }
+        if(strcmp($token, commonModel::get_obj_value($setinfo, "token"))!=0){
+            $this->json(["code" => -4, "msg" => "check_drawcash_setting.invalid token!"]);
+            return;
+        }
+        
+        //---is within valid time range---//
+        $in_time=commonModel::is_curtime_in_time_range($rngs_str);
+        if($in_time==false){
+            $this->json(["code" => -1, "msg" => "check_drawcash_setting.activity finished!"]);
+            return;
+        }
+        
+        //---user has do it before---//
+
+    }
 }

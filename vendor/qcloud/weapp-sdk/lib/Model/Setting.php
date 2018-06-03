@@ -21,4 +21,15 @@ class Setting {
         $sql="select * from SettingData where status=1";
         return DB::raw_select($sql);
     }
+    
+    
+    public static function getDrawCashSetting($storeId){
+        $sql="select * from DrawCashSetting where use_store_id=".$storeId ." and status=1";
+        $arr= DB::raw_select($sql);
+        if(count($arr)>=1){
+            return $arr[0];
+        }else{
+            return NULL;
+        }
+    }
 }

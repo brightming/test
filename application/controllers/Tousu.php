@@ -43,6 +43,12 @@ class Tousu extends CI_Controller {
         //$uri = $_SERVER['REQUEST_URI']; 
         //$rws_post = $GLOBALS['HTTP_RAW_POST_DATA'];
 
+        $met = $this->input->method();
+        if (strcasecmp($met, "post") != 0) {
+            $this->json(["code" => 600, "msg" => __FUNCTION__.".expected post method"]);
+            return;
+        }
+        
         $openId = $_POST["openId"];
         $userinfo = User::findUserByOpenId($openId);
 

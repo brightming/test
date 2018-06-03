@@ -26,17 +26,7 @@ class User extends CI_Controller {
         }
     }
 
-    public function getMyCoupon() {
-
-        $openId = $_POST["openId"];
-        $totalCouponCnt = $_POST["totalCouponCnt"]; //总数量，如果是第一次获取，此参数是负数，那么就需要先获取总数量
-        $startIdx = $_POST["startIdx"]; //分页查询的起始编号
-        $needCnt = $_POST["needCnt"]; //获取多少条
-
-        if ($totalCouponCnt < 0) {
-            
-        }
-    }
+   
 
     public function getUserDrawMoneyRec() {
         $customer_id = 1;
@@ -204,5 +194,8 @@ class User extends CI_Controller {
             'data' => $recs
         ]);
     }
+    
+    
+   
 
 }

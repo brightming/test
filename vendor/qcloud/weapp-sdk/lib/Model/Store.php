@@ -24,6 +24,11 @@ class Store {
     
     public static function addStore($store){
         //TODO
+        
         return 0;
+    }
+    
+    public static function getStoreById($id){
+        return DB::row("Store", ['*'], " id=$id");
     }
 }

@@ -9,56 +9,30 @@ use QCloud_WeApp_SDK\Model\Common as commonModel;
 
 class Coupon {
 
-    public static function countCoupon($customer_id) {
-        // 拼接 SQL 语句 ，统计各种状态的优惠券的数量
-        $conditions = ['customer_id' => $customer_id];
-        $operator = 'and';
-        // 处理条件
-        list($condition, $execValues) = array_values(self::conditionProcess($conditions, $operator));
-
-        // 拼接 SQL 语句
-        $sql = "select * FROM `CustomerCoupon` WHERE $condition ";
-
-        // 执行 SQL 语句
-        $query = self::raw($sql, $execValues);
-        return $query->rowCount();
+  
+    public static function getCouponById($id){
+        $conditions="id=$id";
+        return DB::row("Coupon", ['*'], $conditions);
     }
-
-    /**
-     *  分页获取获取某用户，某种状态的优惠券
-     */
-    public static function getCouponByPage($customer_id, $coupon_status, $startIdx, $pageCnt) {
-        
-    }
-
-    /**
-     * 分配优惠券给用户
-     */
-    public static function assignConpon($customer_id, $coupon_data) {
-        if (gettype($coupon_data) == "object") {
-            $datas = commonModel::object_to_array($coupon_data);
-        } else if (gettype($coupon_data) == "array" || gettype($coupon_data)=="string") {
-            $datas = $coupon_data;
-        } else{
-            return 0;
-        }
-
-        return DB::insert("Coupon", $datas);
-    }
-
-    /**
-     * 使用优惠券
-     *
-     */
-    public static function useCouponStatus($customer_id, $couponId, $options) {
-        
-    }
-
     //获取store_id对应抽奖设置
     public static function getDrawCashSetting($use_store_id) {
         $sql = "SELECT * FROM DrawCashSetting WHERE use_store_id=" . $use_store_id;
         return DB::raw_select($sql);
     }
+    
+    /**
+     * 计算该返现多少给分享者
+     * @param type $totalAmount
+     * @param type $coupon
+     */
+    public static function calculateCashback($totalAmount,$coupon){
+        //TODO 
+        $res= $totalAmount/80;
+        return $res;
+    }
+    
+    
+    
 
     /**
      *  记录用户的抽奖行为

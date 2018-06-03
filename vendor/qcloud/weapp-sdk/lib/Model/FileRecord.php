@@ -12,6 +12,8 @@ class FileRecord
         return DB::row('CustomerUploadFiles', ['*'], compact('customer_id','related_id'));
     }
 
-   
+   public static function createDir($dir){
+       
+   }
 	
 }

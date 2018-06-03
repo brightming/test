@@ -43,9 +43,9 @@ class TestFile extends CI_Controller {
             $inputs= json_decode($raw);
         }
 
-        $name2 =commonModel::get_post_value($inputs, "name");
-        $age =commonModel::get_post_value($inputs, "age");
-        $a=commonModel::get_post_value($inputs, "ok");
+        $name2 =commonModel::get_obj_value($inputs, "name");
+        $age =commonModel::get_obj_value($inputs, "age");
+        $a=commonModel::get_obj_value($inputs, "ok");
         
         $this->json(["name" => $name2,'age'=>$age,'a'=>$a,'conttype'=>$cont]);
     }
