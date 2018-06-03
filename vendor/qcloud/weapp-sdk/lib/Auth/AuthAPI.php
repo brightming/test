@@ -4,7 +4,7 @@ namespace QCloud_WeApp_SDK\Auth;
 use \Exception as Exception;
 
 use \QCloud_WeApp_SDK\Conf as Conf;
-use \QCloud_WeApp_SDK\Model\User as User;
+use \QCloud_WeApp_SDK\Model\User as userModel;
 use \QCloud_WeApp_SDK\Constants as Constants;
 use \QCloud_WeApp_SDK\Helper\Logger as Logger;
 use \QCloud_WeApp_SDK\Helper\Request as Request;
@@ -41,7 +41,7 @@ class AuthAPI {
         $userinfo = json_decode($decryptData);
 
         // 4. 储存到数据库中
-        User::storeUserInfo($userinfo, $skey, $sessionKey);
+        userModel::storeUserInfo($userinfo, $skey, $sessionKey);
 
         return [
             'loginState' => Constants::S_AUTH,
@@ -50,7 +50,7 @@ class AuthAPI {
     }
 
     public static function checkLogin($skey) {
-        $userinfo = User::findUserBySKey($skey);
+        $userinfo = userModel::findUserBySKey($skey);
         if ($userinfo === NULL) {
             return [
                 'loginState' => Constants::E_AUTH,

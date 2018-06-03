@@ -4,7 +4,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 use QCloud_WeApp_SDK\Constants as Constants;
 use \QCloud_WeApp_SDK\Model\Remark as remarkModel;
-use \QCloud_WeApp_SDK\Model\User as User;
+use \QCloud_WeApp_SDK\Model\User as userModel;
+use QCloud_WeApp_SDK\Model\Share as shareModel;
+use QCloud_WeApp_SDK\FunctionCodeConstants as funCodeConst;
 
 /**
   点评相关
@@ -52,7 +54,7 @@ class Remark extends CI_Controller {
 
 
         //查看这个openid的用户，对于这个店的这个桌子的点评，最近的一次是在什么时候，如果相隔不超过1小时，则拒绝评论
-        $userinfo = User::findUserByOpenId($openId);
+        $userinfo = userModel::findUserByOpenId($openId);
         $latest = remarkModel::getUserLatestRemark($userinfo->id, $storeId, $tableId);
         $can_add = false;
         if ($latest == NULL) {

@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 use QCloud_WeApp_SDK\Constants as Constants;
 use \QCloud_WeApp_SDK\Model\Tousu as TousuModel;
-use \QCloud_WeApp_SDK\Model\User as User;
+use \QCloud_WeApp_SDK\Model\User as userModel;
 use \QCloud_WeApp_SDK\Model\FileRecord as FileRecordModel;
 
 /**
@@ -25,7 +25,7 @@ class Tousu extends CI_Controller {
         $mypost = json_decode($rws_post);
         $openId = $mypost->openId;
 
-        $userinfo = User::findUserByOpenId($openId);
+        $userinfo = userModel::findUserByOpenId($openId);
         $res = TousuModel::addUserTousu($userinfo->id, $mypost);
 
         if ($res == NULL) {
@@ -50,7 +50,7 @@ class Tousu extends CI_Controller {
         }
         
         $openId = $_POST["openId"];
-        $userinfo = User::findUserByOpenId($openId);
+        $userinfo = userModel::findUserByOpenId($openId);
 
         //$this->json([
         //'openId'=>$openId,
@@ -115,7 +115,7 @@ class Tousu extends CI_Controller {
 
     public function AddTousuDingdan() {
         $openId = $_POST["openId"];
-        $userinfo = User::findUserByOpenId($openId);
+        $userinfo = userModel::findUserByOpenId($openId);
 
         //-------------create files dir -----------------//
         $file = $_FILES['upict']; // 
