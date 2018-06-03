@@ -5,7 +5,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 use QCloud_WeApp_SDK\Constants as Constants;
 use \QCloud_WeApp_SDK\Model\Tousu as TousuModel;
 use \QCloud_WeApp_SDK\Model\User as userModel;
-use \QCloud_WeApp_SDK\Model\FileRecord as FileRecordModel;
+use \QCloud_WeApp_SDK\Model\FileRecord as fileModel;
+use QCloud_WeApp_SDK\FunctionCodeConstants as funCodeConst;
 
 /**
   投诉相关
@@ -45,136 +46,178 @@ class Tousu extends CI_Controller {
 
         $met = $this->input->method();
         if (strcasecmp($met, "post") != 0) {
-            $this->json(["code" => 600, "msg" => __FUNCTION__.".expected post method"]);
+            $this->json(["code" => 600, "msg" => __FUNCTION__ . ".expected post method"]);
             return;
         }
-        
-        $openId = $_POST["openId"];
-        $userinfo = userModel::findUserByOpenId($openId);
 
-        //$this->json([
-        //'openId'=>$openId,
-        //'userinfo'=>$userinfo
-        //]);
-        //return;
-        //-------------create files dir -----------------//
-        $file = $_FILES['upict']; // 
-        $tmpPath = $file['tmp_name'];
-        $dir = './uploads/';
-        //按照年/月/日创建文件夹
-        $file_path = "$dir" . '/' . date("Y") . '/' . date("m") . '/' . date("d");
+        $unionId = commonModel::get_obj_value($inputs, 'unionId');
+        $tableId = commonModel::get_obj_value($inputs, 'tableId');
+        $storeId = commonModel::get_obj_value($inputs, 'storeId');
+        $tousuIds = commonModel::get_obj_value($inputs, 'tousuIds');
+        $extraDesc = commonModel::get_obj_value($inputs, 'extraDesc');
 
-        $dir_ok = true;
-        if (!is_dir($file_path)) {
-            if (mkdir($file_path, 755, true)) {
-                
-            } else {
-                $dir_ok = false;
+        $pictureCnt = commonModel::get_obj_value($inputs, 'pictureCnt');
+        $pictureSeq = commonModel::get_obj_value($inputs, 'pictureSeq');
+        $name = commonModel::get_obj_value($inputs, 'name');
+        $token = commonModel::get_obj_value($inputs, 'token');
+
+
+        if ($unionId == NULL || $storeId == NULL || $tousuIds == NULL) {
+            $this->json(["code" => funCodeConst::NOT_ENOUGH_PARAM['code'], "msg" => __FUNCTION__ . "." . funCodeConst::NOT_ENOUGH_PARAM['msg']]);
+            return;
+        }
+
+        $userinfo = userModel::findUserByUnionId($unionId);
+        if ($userinfo == NULL) {
+            $this->json(["code" => funCodeConst::INVALID_USER['code'], "msg" => __FUNCTION__ . "." . funCodeConst::INVALID_USER['msg']]);
+            return;
+        }
+
+
+        if ($token == NULL) {
+            if ($pictureSeq != NULL && $pictureSeq > 0) {
+                $this->json(["code" => funCodeConst::NOT_ENOUGH_PARAM['code'], "msg" => __FUNCTION__ . "." . funCodeConst::NOT_ENOUGH_PARAM['msg']]);
+                return;
             }
-        } else {
-            
+
+            $res = TousuModel::addUserTousu2($userinfo->id, $extraDesc, $tableId, $storeId, 1, '', $tousuIds);
+
+            if ($res == NULL) {
+                $this->json(['code' => -1, 'msg' => 'fail']);
+                return;
+            }
+
+            $token = $res->id;
         }
 
-        if ($dir_ok == false) {
-            $this->json(['code' => -2, 'desc' => 'folder fail']);
-            return;
+        if ($pictureCnt > 0 && $name != NULL) {
+            $file = $_FILES['name']; // 
+            $tmpPath = $file['tmp_name'];
+            $size = $file['size'];
+            if ($size > 0) {
+                $dir = './uploads/';
+                //按照年/月/日创建文件夹
+                $file_path = "$dir" . '/' . date("Y") . '/' . date("m") . '/' . date("d");
+                $dir_ok = true;
+                if (!is_dir($file_path)) {
+                    if (mkdir($file_path, 755, true)) {
+                        
+                    } else {
+                        $dir_ok = false;
+                    }
+                }
+                if ($dir_ok == false) {
+                    $this->json(['code' => -8, 'msg' => 'folder fail']);
+                    return;
+                }
+                $originalName = $file['name'];
+                $arr = explode(".", $originalName);
+                $dest_name = "tousu-" . $token . '-1.' . $arr[count($arr) - 1];
+                $destination = $file_path . '/' . $dest_name;
+                if (move_uploaded_file($tmpPath, $destination)) {
+                    $ok = true;
+                }
+                //-----save to file record---//
+                $res2 = fileModel::storeFileRecord($user->id, 1, $token, $destination, $file['size']);
+            }
         }
 
-
-        //--save record---//	
-        //public static function addUserTousu2($input_customer_id,$extra_comment,$table_id,$store_id,$picture_cnt,$picture_dir,$tousu){
-        $res = TousuModel::addUserTousu2($userinfo->id, $_POST["extraDesc"], $_POST["tableId"], $_POST["storeId"], 1, $file_path, $_POST['complain_ids']);
-
-        if ($res == NULL) {
-            $this->json(['code' => -1, 'desc' => 'fail']);
-            return;
-        }
-
-        //----------save file----//
-        $ok = false;
-
-        $originalName = $file['name'];
-        $arr = explode(".", $originalName);
-        $dest_name = "tousu-" . $res->id . '-1.' . $arr[count($arr) - 1];
-        $destination = $file_path . '/' . $dest_name;
-        if (move_uploaded_file($tmpPath, $destination)) {
-            $ok = true;
-        }
-
-        //-----save to file record---//
-        $res2 = FileRecordModel::storeFileRecord($userinfo->id, 1, $res->id, $destination, $file['size']);
-        $filerec = false;
-        if ($res2 != NULL) {
-            $filerec = true;
-        }
         $this->json([
             'code' => 1,
-            'tousuid' => $res->id
+            'msg' => '',
+            'data' => [
+                'token' => $token
+            ]
         ]);
     }
 
     public function AddTousuDingdan() {
-        $openId = $_POST["openId"];
-        $userinfo = userModel::findUserByOpenId($openId);
+        
+        
+        $met = $this->input->method();
+        if (strcasecmp($met, "post") != 0) {
+            $this->json(["code" => 600, "msg" => __FUNCTION__ . ".expected post method"]);
+            return;
+        }
 
-        //-------------create files dir -----------------//
-        $file = $_FILES['upict']; // 
-        $tmpPath = $file['tmp_name'];
-        $dir = './uploads/';
-        //按照年/月/日创建文件夹
-        $file_path = "$dir" . '/' . date("Y") . '/' . date("m") . '/' . date("d");
+        $unionId = commonModel::get_obj_value($inputs, 'unionId');
+        $tableId = commonModel::get_obj_value($inputs, 'tableId');
+        $storeId = commonModel::get_obj_value($inputs, 'storeId');
+        $cellphone = commonModel::get_obj_value($inputs, 'cellphone');
+        $tousuToken = commonModel::get_obj_value($inputs, 'tousuToken');
 
-        $dir_ok = true;
-        if (!is_dir($file_path)) {
-            if (mkdir($file_path, 755, true)) {
-                
-            } else {
-                $dir_ok = false;
+        $pictureCnt = commonModel::get_obj_value($inputs, 'pictureCnt');
+        $pictureSeq = commonModel::get_obj_value($inputs, 'pictureSeq');
+        $name = commonModel::get_obj_value($inputs, 'name');
+        $token = commonModel::get_obj_value($inputs, 'token');
+
+
+        if ($unionId == NULL || $cellphone == NULL || $tousuToken == NULL || $pictureCnt!=NULL && $pictureCnt<0 || $pictureSeq!=NULL && $pictureSeq<0) {
+            $this->json(["code" => funCodeConst::NOT_ENOUGH_PARAM['code'], "msg" => __FUNCTION__ . "." . funCodeConst::NOT_ENOUGH_PARAM['msg']]);
+            return;
+        }
+
+        $userinfo = userModel::findUserByUnionId($unionId);
+        if ($userinfo == NULL) {
+            $this->json(["code" => funCodeConst::INVALID_USER['code'], "msg" => __FUNCTION__ . "." . funCodeConst::INVALID_USER['msg']]);
+            return;
+        }
+
+
+        if ($token == NULL) {
+            if ($pictureSeq != NULL && $pictureSeq > 0) {
+                $this->json(["code" => funCodeConst::NOT_ENOUGH_PARAM['code'], "msg" => __FUNCTION__ . "." . funCodeConst::NOT_ENOUGH_PARAM['msg']]);
+                return;
             }
-        } else {
-            
+            $res = TousuModel::addTousuDingdan($tousuToken, $cellphone, $userinfo->id, '', $pictureCnt);
+            if ($res == NULL) {
+                $this->json(['code' => -1, 'msg' => 'fail']);
+                return;
+            }
+
+            $token = $res->id;
         }
 
-        if ($dir_ok == false) {
-            $this->json(['code' => -2, 'desc' => 'folder fail']);
-            return;
+        if ($pictureCnt!=NULL  && $name != NULL) {
+            $file = $_FILES['name']; // 
+            $tmpPath = $file['tmp_name'];
+            $size = $file['size'];
+            if ($size > 0) {
+                $dir = './uploads/';
+                //按照年/月/日创建文件夹
+                $file_path = "$dir" . '/' . date("Y") . '/' . date("m") . '/' . date("d");
+                $dir_ok = true;
+                if (!is_dir($file_path)) {
+                    if (mkdir($file_path, 755, true)) {
+                        
+                    } else {
+                        $dir_ok = false;
+                    }
+                }
+                if ($dir_ok == false) {
+                    $this->json(['code' => -8, 'msg' => 'folder fail']);
+                    return;
+                }
+                $originalName = $file['name'];
+                $arr = explode(".", $originalName);
+                $dest_name = "tousudingdan-" . $token . '-'.$pictureSeq.'.' . $arr[count($arr) - 1];
+                $destination = $file_path . '/' . $dest_name;
+                if (move_uploaded_file($tmpPath, $destination)) {
+                    $ok = true;
+                }
+                //-----save to file record---//
+                $res2 = fileModel::storeFileRecord($userinfo->id,2, $token, $destination, $file['size']);
+            }
         }
 
-
-
-        //--save record---//	
-        //public static function addUserTousu2($input_customer_id,$extra_comment,$table_id,$store_id,$picture_cnt,$picture_dir,$tousu){
-        $res = TousuModel::addTousuDingdan($_POST["tousuid"], $_POST["cellphone"], $userinfo->id, $file_path, 1);
-        //public static function addTousuDingdan($complain_id,$cellphone,$customer_id,$order_pict_dir,$order_pict_cnt)
-
-        if ($res == NULL) {
-            $this->json(['code' => -1, 'desc' => 'addTousuDingdan fail',
-                'tousuid' => $_POST["tousuid"], 'cellphone' => $_POST["cellphone"],
-            ]);
-            return;
-        }
-
-        //----------save file----//
-        $ok = false;
-
-        $originalName = $file['name'];
-        $arr = explode(".", $originalName);
-        $dest_name = "tousudingdan-" . $res->id . '-1.' . $arr[count($arr) - 1];
-        $destination = $file_path . '/' . $dest_name;
-        if (move_uploaded_file($tmpPath, $destination)) {
-            $ok = true;
-        }
-
-        //-----save to file record---//
-        $res2 = FileRecordModel::storeFileRecord($userinfo->id, 2, $res->id, $destination, $file['size']);
-        $filerec = false;
-        if ($res2 != NULL) {
-            $filerec = true;
-        }
         $this->json([
             'code' => 1,
-            'tousuid' => $res->id
+            'msg' => '',
+            'data' => [
+                'token' => $token
+            ]
         ]);
+
     }
 
 }
