@@ -342,7 +342,7 @@ class Share extends CI_Controller {
         }
 
         //分页获取简要信息
-        $orderby = 'order by create_time desc';
+        $orderby = ' order by create_time desc';
         $datas = shareModel::getUserShareByPage($user->id, $offset, $cnt, $orderby);
         if (count($datas) == 0) {
             $data = ['totalCnt' => $totalCnt, 'cnt' => 0, 'items' => []];

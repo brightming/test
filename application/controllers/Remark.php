@@ -2,11 +2,11 @@
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-use QCloud_WeApp_SDK\Constants as Constants;
 use \QCloud_WeApp_SDK\Model\Remark as remarkModel;
 use \QCloud_WeApp_SDK\Model\User as userModel;
-use QCloud_WeApp_SDK\Model\Share as shareModel;
+use QCloud_WeApp_SDK\Model\Store as storeModel;
 use QCloud_WeApp_SDK\FunctionCodeConstants as funCodeConst;
+use QCloud_WeApp_SDK\Model\Common as commonModel;
 
 /**
   点评相关
@@ -90,85 +90,174 @@ class Remark extends CI_Controller {
         }
         /**/
         $this->json([
-            'token'=>$result->id
+            'token' => $result->id
         ]);
     }
 
     /**
      * 统计点评总数
      */
-    public function getUesrRemarkStatistics(){
+    public function getUesrRemarkStatistics() {
         $met = $this->input->method();
         if (strcasecmp($met, "get") != 0) {
-            $this->json(["code" => funCodeConst::NEED_GET_METHOD['code'], "msg" => __FUNCTION__ . ".".funCodeConst::NEED_GET_METHOD['msg']]);
+            $this->json(["code" => funCodeConst::NEED_GET_METHOD['code'], "msg" => __FUNCTION__ . "." . funCodeConst::NEED_GET_METHOD['msg']]);
             return;
         }
 
         $unionId = $this->input->get("unionId");
-      
 
-        if ($unionId == NULL  ) {
-            $this->json(["code" => funCodeConst::NOT_ENOUGH_PARAM['code'], "msg" => __FUNCTION__ . ".".funCodeConst::NOT_ENOUGH_PARAM['msg']]);
+
+        if ($unionId == NULL) {
+            $this->json(["code" => funCodeConst::NOT_ENOUGH_PARAM['code'], "msg" => __FUNCTION__ . "." . funCodeConst::NOT_ENOUGH_PARAM['msg']]);
             return;
         }
-        
-         //check user
+
+        //check user
         $user = UserModel::findUserByUnionId($unionId);
         if ($user == NULL) {
-            $this->json(["code" => funCodeConst::INVALID_USER['code'], "msg" => __FUNCTION__ . ".".funCodeConst::INVALID_USER['msg']]);
+            $this->json(["code" => funCodeConst::INVALID_USER['code'], "msg" => __FUNCTION__ . "." . funCodeConst::INVALID_USER['msg']]);
             return;
         }
-        
-        $cnt= remarkModel::getUerRemarkCnt($user->id);
+
+        $cnt = remarkModel::getUerRemarkCnt($user->id);
         $this->json([
-            'code'=>0,
-            'msg'=>'',
-            'data'=>['totalCnt'=>$cnt]
+            'code' => 0,
+            'msg' => '',
+            'data' => ['totalCnt' => $cnt]
         ]);
     }
-    
+
     /**
      * 分页获取点评
      */
-    public function getUesrRemark(){
-         $met = $this->input->method();
+    public function getUesrRemark() {
+        $met = $this->input->method();
         if (strcasecmp($met, "get") != 0) {
-            $this->json(["code" => funCodeConst::NEED_GET_METHOD['code'], "msg" => __FUNCTION__ . ".".funCodeConst::NEED_GET_METHOD['msg']]);
+            $this->json(["code" => funCodeConst::NEED_GET_METHOD['code'], "msg" => __FUNCTION__ . "." . funCodeConst::NEED_GET_METHOD['msg']]);
             return;
         }
 
         $unionId = $this->input->get("unionId");
         $offset = $this->input->get("offset");
-        $cnt=$this->input->get("cnt");
-        
-        if($offset==NULL){
-            $offset=0;
+        $cnt = $this->input->get("cnt");
+
+        if ($offset == NULL) {
+            $offset = 0;
         }
-        if($cnt==NULL){
-            $cnt=5;
+        if ($cnt == NULL) {
+            $cnt = 5;
         }
 
-        if ($unionId == NULL  ) {
-            $this->json(["code" => funCodeConst::NOT_ENOUGH_PARAM['code'], "msg" => __FUNCTION__ . ".".funCodeConst::NOT_ENOUGH_PARAM['msg']]);
+        if ($unionId == NULL) {
+            $this->json(["code" => funCodeConst::NOT_ENOUGH_PARAM['code'], "msg" => __FUNCTION__ . "." . funCodeConst::NOT_ENOUGH_PARAM['msg']]);
             return;
         }
-        
-         //check user
+
+        //check user
         $user = UserModel::findUserByUnionId($unionId);
         if ($user == NULL) {
-            $this->json(["code" => funCodeConst::INVALID_USER['code'], "msg" => __FUNCTION__ . ".".funCodeConst::INVALID_USER['msg']]);
+            $this->json(["code" => funCodeConst::INVALID_USER['code'], "msg" => __FUNCTION__ . "." . funCodeConst::INVALID_USER['msg']]);
             return;
         }
-        
-        $res= remarkModel::getUserRemarkByPages($user->id,$offset,$cnt);
-        
+
+        $res = remarkModel::getUserRemarkByPages($user->id, $offset, $cnt);
+
         $this->json([
-            'code'=>0,
-            'msg'=>'',
-            'data'=>[
-                'cnt'=>count($res),
-                'items'=>$res
+            'code' => 0,
+            'msg' => '',
+            'data' => [
+                'cnt' => count($res),
+                'items' => $res
             ]
         ]);
     }
+
+    /**
+     * 用户在点评后抽奖，判断抽奖的结果
+     * 
+     * 输入:
+     * lng 
+     * lat
+     * unionId
+     * storeId
+     * tableId
+     * token
+     */
+    public function getLottoryResult() {
+
+        $met = $this->input->method();
+        if (strcasecmp($met, "post") != 0) {
+            $this->json(["code" => funCodeConst::NEED_POST_METHOD['code'], "msg" => __FUNCTION__ . "." . funCodeConst::NEED_POST_METHOD['msg']]);
+            return;
+        }
+
+        $cont = $this->input->get_request_header('Content-Type', TRUE);
+        $inputs = $this->input;
+        if (strcasecmp($cont, "application/json") == 0) {
+            $raw = $GLOBALS['HTTP_RAW_POST_DATA'];
+            $inputs = json_decode($raw);
+        }
+        $lng = commonModel::get_obj_value($inputs, 'lng');
+        $lat = commonModel::get_obj_value($inputs, 'lat');
+        $unionId = commonModel::get_obj_value($inputs, 'unionId');
+        $storeId = commonModel::get_obj_value($inputs, 'storeId');
+        $tableId = commonModel::get_obj_value($inputs, 'tableId');
+        $token = commonModel::get_obj_value($inputs, 'token');
+
+        if ($lng == NULL || $lat == NULL || unionId == NULL || $storeId == NULL || $token == NULL) {
+            $this->json(["code" => funCodeConst::NOT_ENOUGH_PARAM['code'], "msg" => __FUNCTION__ . "." . funCodeConst::NOT_ENOUGH_PARAM['msg']]);
+            return;
+        }
+
+        //--token is valid--//
+        $rem=remarkModel::getUserRemarkById($token);
+        if($rem==NULL){
+            $this->json(["code" => funCodeConst::INVALID_TOKEN['code'], "msg" => __FUNCTION__ . "." . funCodeConst::INVALID_TOKEN['msg']]);
+            return;
+        }
+        
+        //---是否在点评的有效时间内---//
+        $rem_time= strtotime($rem->remark_time);
+        $now_time=time();
+        if($now_time-$rem_time>60*60){//1小时内有效
+            $this->json(["code" => funCodeConst::TIME_EXPIRED['code'], "msg" => __FUNCTION__ . "." . funCodeConst::TIME_EXPIRED['msg']]);
+            return;
+        }
+        
+        //----是否已经抽过奖---//
+        $rec= remarkModel::getCustomerLuckyRecordByRemarkId($token);
+        if($rec!=NULL){
+            $this->json(["code" => funCodeConst::DUPLICATED_OPER['code'], "msg" => __FUNCTION__ . "." . funCodeConst::DUPLICATED_OPER['msg']]);
+            return;
+        }
+        
+        //---用户是否有效---//
+        $user=userModel::findUserByUnionId($unionId);
+        if($user==NULL){
+            $this->json(["code" => funCodeConst::INVALID_USER['code'], "msg" => __FUNCTION__ . "." . funCodeConst::INVALID_USER['msg']]);
+            return;
+        }
+        
+        //---是否在店的附近---//
+        $store= storeModel::getStoreById($storeId);
+        if($store==NULL){
+             $this->json(["code" => funCodeConst::INVALID_STORE['code'], "msg" => __FUNCTION__ . "." . funCodeConst::INVALID_STORE['msg']]);
+            return;
+        }
+        $dist = commonModel::get_distance($lng, $lat, $store->longitude, $store->latitude);
+        if ($dist > 150) {
+            $this->json(["code" => funCodeConst::INVALID_PLACE['code'], "msg" => __FUNCTION__ . "." . funCodeConst::INVALID_PLACE['msg']]);
+            return;
+        }
+        
+        //记录抽奖行为
+        $rec= remarkModel::saveRemarkLottoryRecord($user->id,$storeId,$token);
+        if($rec==NULL){
+            $this->json(["code" => funCodeConst::ERR_DB_OPER['code'], "msg" => __FUNCTION__ . "." . funCodeConst::ERR_DB_OPER['msg']]);
+            return;
+        }
+        
+        //获取用户的抽奖结果
+    }
+
 }

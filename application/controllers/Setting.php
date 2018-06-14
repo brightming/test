@@ -24,16 +24,16 @@ class Setting extends CI_Controller {
             $this->json(["code" => 600, "msg" => "check_remark_setting.expected post method"]);
             return;
         }
-        $cont=$this->input->get_request_header('Content-Type', TRUE);
-        $inputs=$this->input;
-        if(strcasecmp($cont, "application/json")==0){
-            $raw=$GLOBALS['HTTP_RAW_POST_DATA'];
-            $inputs= json_decode($raw);
+        $cont = $this->input->get_request_header('Content-Type', TRUE);
+        $inputs = $this->input;
+        if (strcasecmp($cont, "application/json") == 0) {
+            $raw = $GLOBALS['HTTP_RAW_POST_DATA'];
+            $inputs = json_decode($raw);
         }
-        $lng = commonModel::get_obj_value($inputs,'lng');
-        $lat = commonModel::get_obj_value($inputs,'lat');
-        $unionId = commonModel::get_obj_value($inputs,'unionId');
-        $storeId = commonModel::get_obj_value($inputs,'storeId');
+        $lng = commonModel::get_obj_value($inputs, 'lng');
+        $lat = commonModel::get_obj_value($inputs, 'lat');
+        $unionId = commonModel::get_obj_value($inputs, 'unionId');
+        $storeId = commonModel::get_obj_value($inputs, 'storeId');
 
         if ($lng == NULL || $lat == NULL || $unionId == NULL || $storeId == NULL) {
             $this->json(["code" => -6, "msg" => "check_remark_setting.param not enough"]);
@@ -47,8 +47,6 @@ class Setting extends CI_Controller {
             return;
         }
         //---TODO check if this user is allowed
-        
-
         //get all stores 
         $all_stores = storeModel::getAllStores();
         if (count($all_stores) == 0) {
@@ -160,7 +158,7 @@ class Setting extends CI_Controller {
                         $this->json(["code" => -5, "msg" => "check_remark_setting.has dobe it "]);
                         return;
                     }
-                }else{
+                } else {
                     if (commonModel::is_today($recdate) && commonModel::same_with_curtime_range($rng_str_all, $rectime2) == true) {
                         //当前时间段已经点评过一次了
                         $this->json(["code" => -5, "msg" => "check_remark_setting.has dobe it "]);
@@ -174,30 +172,29 @@ class Setting extends CI_Controller {
         return;
     }
 
-    
     /**
      * 抽现金的设置
      * @return type
      */
-    public function check_drawcash_setting(){
+    public function check_drawcash_setting() {
         $met = $this->input->method();
         if (strcasecmp($met, "post") != 0) {
             $this->json(["code" => 600, "msg" => "check_drawcash_setting.expected post method"]);
             return;
         }
-        $cont=$this->input->get_request_header('Content-Type', TRUE);
-        $inputs=$this->input;
-        if(strcasecmp($cont, "application/json")==0){
-            $raw=$GLOBALS['HTTP_RAW_POST_DATA'];
-            $inputs= json_decode($raw);
+        $cont = $this->input->get_request_header('Content-Type', TRUE);
+        $inputs = $this->input;
+        if (strcasecmp($cont, "application/json") == 0) {
+            $raw = $GLOBALS['HTTP_RAW_POST_DATA'];
+            $inputs = json_decode($raw);
         }
-        $lng = commonModel::get_obj_value($inputs,'lng');
-        $lat = commonModel::get_obj_value($inputs,'lat');
-        $unionId = commonModel::get_obj_value($inputs,'unionId');
-        $token = commonModel::get_obj_value($inputs,'token');
-        $storeId = commonModel::get_obj_value($inputs,'storeId');
-        
-        
+        $lng = commonModel::get_obj_value($inputs, 'lng');
+        $lat = commonModel::get_obj_value($inputs, 'lat');
+        $unionId = commonModel::get_obj_value($inputs, 'unionId');
+        $token = commonModel::get_obj_value($inputs, 'token');
+        $storeId = commonModel::get_obj_value($inputs, 'storeId');
+
+
         //--check lng lat and storeid
         //get all stores 
         $all_stores = storeModel::getAllStores();
@@ -212,7 +209,7 @@ class Setting extends CI_Controller {
         foreach ($all_stores as $store) {
             if ($store->id == $storeId) {
                 $dist = commonModel::get_distance($lng, $lat, $store->longitude, $store->latitude);
-                if ($dist <= $allow_dist ) {
+                if ($dist <= $allow_dist) {
                     $find_nearby = true; //find any one
                 }
                 break;
@@ -223,33 +220,163 @@ class Setting extends CI_Controller {
             $this->json(["code" => -2, "msg" => "check_drawcash_setting.no nearby store"]);
             return;
         }
-        
+
         //----check token --//
-        $setinfo=commonModel::getDrawCashSetting($storeId);
-        if($setinfo==NULL){
+        $setinfo = commonModel::getDrawCashSetting($storeId);
+        if ($setinfo == NULL) {
             $this->json(["code" => -2, "msg" => "check_drawcash_setting.not start yet"]);
             return;
         }
-        if(strcmp($token, commonModel::get_obj_value($setinfo, "token"))!=0){
+        if (strcmp($token, commonModel::get_obj_value($setinfo, "token")) != 0) {
             $this->json(["code" => -4, "msg" => "check_drawcash_setting.invalid token!"]);
             return;
         }
-        
+
         //---is within valid time range---//
-        $in_time=commonModel::is_curtime_in_time_range($rngs_str);
-        if($in_time==false){
+        $in_time = commonModel::is_curtime_in_time_range($rngs_str);
+        if ($in_time == false) {
             $this->json(["code" => -1, "msg" => "check_drawcash_setting.activity finished!"]);
             return;
         }
-        
-        //---user has do it before---//
 
+        //---user has do it before---//
+    }
+
+    /**
+     * 获取抽奖的设置情况
+     * 
+     * lng	用户手机获取经度
+      lat	用户手机获取纬度
+      unionID	用户unionid
+      storeId	店面id
+     */
+    public function getVoucherSetting() {
+        $met = $this->input->method();
+        if (strcasecmp($met, "post") != 0) {
+            $this->json(["code" => funCodeConst::NEED_POST_METHOD['code'], "msg" => __FUNCTION__ . "." . funCodeConst::NEED_POST_METHOD['msg']]);
+            return;
+        }
+
+        $cont = $this->input->get_request_header('Content-Type', TRUE);
+        $inputs = $this->input;
+        if (strcasecmp($cont, "application/json") == 0) {
+            $raw = $GLOBALS['HTTP_RAW_POST_DATA'];
+            $inputs = json_decode($raw);
+        }
+        $lng = commonModel::get_obj_value($inputs, 'lng');
+        $lat = commonModel::get_obj_value($inputs, 'lat');
+        $unionId = commonModel::get_obj_value($inputs, 'unionId');
+        $storeId = commonModel::get_obj_value($inputs, 'storeId');
+
+        if ($lng == NULL || $lat == NULL || $unionId == NULL || $storeId == NULL) {
+            $this->json(["code" => -1, "msg" => __FUNCTION__ . ".not enough params"]);
+            return;
+        }
+
+        //---check user----//
+        $user = UserModel::findUserByUnionId($unionId);
+        if ($user == NULL) {
+            $this->json(["code" => -2, "msg" => __FUNCTION__ . ".user not found "]);
+            return;
+        }
+        //----check store----//
+        $store = storeModel::getStoreById($storeId);
+        if ($store == NULL) {
+            $this->json(["code" => -3, "msg" => __FUNCTION__ . ".store not found "]);
+            return;
+        }
+
+        //--cmp position--//
+        $dist = commonModel::get_distance($lng, $lat, $store->longitude, $store->latitude);
+        if ($dist > 50) {
+            $this->json(["code" => -4, "msg" => __FUNCTION__ . ".not any store close to the user !"]);
+            return;
+        }
+
+        //----获取该店的现金抽奖设置----//
+        $setting = settingModel::getDrawCashSetting($storeId);
+        if ($setting == NULL) {
+            $this->json(["code" => -5, "msg" => __FUNCTION__ . ".not find any setting data of the store !"]);
+            return;
+        }
+
+        $this->json([
+            'code' => 0,
+            'msg' => '',
+            'data' => $setting
+        ]);
+    }
+
+    /**
+     * 判断抽现金的token是否有效
+     */
+    public function isDrawcashTokenValid() {
+        $met = $this->input->method();
+        if (strcasecmp($met, "post") != 0) {
+            $this->json(["code" => funCodeConst::NEED_POST_METHOD['code'], "msg" => __FUNCTION__ . "." . funCodeConst::NEED_POST_METHOD['msg']]);
+            return;
+        }
+
+        $cont = $this->input->get_request_header('Content-Type', TRUE);
+        $inputs = $this->input;
+        if (strcasecmp($cont, "application/json") == 0) {
+            $raw = $GLOBALS['HTTP_RAW_POST_DATA'];
+            $inputs = json_decode($raw);
+        }
+        $lng = commonModel::get_obj_value($inputs, 'lng');
+        $lat = commonModel::get_obj_value($inputs, 'lat');
+        $unionId = commonModel::get_obj_value($inputs, 'unionId');
+        $storeId = commonModel::get_obj_value($inputs, 'storeId');
+        $token = commonModel::get_obj_value($inputs, 'token');
+
+        if ($lng == NULL || $lat == NULL || $unionId == NULL || $storeId == NULL) {
+            $this->json(["code" => -1, "msg" => __FUNCTION__ . ".not enough params"]);
+            return;
+        }
+
+        //---check user----//
+        $user = UserModel::findUserByUnionId($unionId);
+        if ($user == NULL) {
+            $this->json(["code" => -2, "msg" => __FUNCTION__ . ".user not found "]);
+            return;
+        }
+        //----check store----//
+        $store = storeModel::getStoreById($storeId);
+        if ($store == NULL) {
+            $this->json(["code" => -3, "msg" => __FUNCTION__ . ".store not found "]);
+            return;
+        }
+
+        //--cmp position--//
+        $dist = commonModel::get_distance($lng, $lat, $store->longitude, $store->latitude);
+        if ($dist > 50) {
+            $this->json(["code" => -4, "msg" => __FUNCTION__ . ".not any store close to the user !"]);
+            return;
+        }
+
+        //----获取该店的现金抽奖设置----//
+        $setting = settingModel::getDrawCashSetting($storeId);
+        if ($setting == NULL) {
+            $this->json(["code" => -5, "msg" => __FUNCTION__ . ".not find any setting data of the store !"]);
+            return;
+        }
+
+        if ($setting->token != $token) {
+            if ($setting == NULL) {
+                $this->json(["code" => -6, "msg" => __FUNCTION__ . ".invalid token !"]);
+                return;
+            }
+        }
+
+        $this->json(["code" => 0, "msg" =>"ok"]);
     }
     
     /**
-     * 获取抽奖的设置情况
+     * 获取点评抽奖的奖项情况
      */
-    public function getVoucherSetting(){
-        
+    public function getRemarkLottorySettings(){
+        $res=remarkModel::getRemarkLottorySettings();
+        $this->json(["code" => 0, "msg" =>"ok",'data'=>$res]);
     }
+
 }

@@ -32,6 +32,17 @@ class Payment {
          return DB::row("OrderRecord", ['*'], $conditions);
     }
     
+    public static function getPayrecById($id){
+        return DB::row("OrderRecord", ['*'], ["id"=>$id]);
+    }
+    
+    public static function setPayrecPaystatusById($id,$status){
+        return DB::update("OrderRecord", ['pay_status'=>$status,"pay_status_time"=>date("Y-m-d H:i:s",time())], ["id"=>$id]);
+    }
+     public static function setPayrecPaystatusByTradeId($trade_id,$status){
+        return DB::update("OrderRecord", ['pay_status'=>$status,"pay_status_time"=>date("Y-m-d H:i:s",time())], ["trade_number"=>$trade_id]);
+    }
+    
     public static function getPaymentRecsByPage($customer_id,$offset,$cnt){
         if($offset<0){
             $offset=0;

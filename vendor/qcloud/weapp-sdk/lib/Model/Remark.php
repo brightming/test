@@ -42,6 +42,14 @@ class Remark {
             return DB::select('CustomerRemarkRecord', ['*'], ['customer_id' => $customerId], 'and', 'order by remark_time desc limit 1');
         }
     }
+    
+    /**
+     * 根据id查询点评内容
+     * @param type $id
+     */
+    public static function getUserRemarkById($id){
+        return DB::row("CustomerRemarkRecord", ['*'], ["id"=>$id]);
+    }
 
     /**
      * customer_id是用户的数据库id
@@ -72,8 +80,7 @@ class Remark {
 
         return $res;
     }
-
-    /**
+/**
      * 获取同桌用户的点评领券情况
      */
     public static function getAllVoucherOneTable() {
@@ -160,4 +167,35 @@ class Remark {
         return $res;
     }
 
+    /**
+     * 根据用户的点评id，获取对应的抽奖情况
+     * @param type $remark_id
+     */
+    public static function getCustomerLuckyRecordByRemarkId($remark_id){
+        return DB::row("CustomerLuckyRecord", ['*'], ["remark_id"=>$remark_id]);    
+    }
+    
+    /**
+     * 获取点评抽奖的奖项设置
+     */
+    public static function getRemarkLottorySettings(){
+        return DB::select("RemarkLuckyItem",['*'],["status"=>1]);
+    }
+    
+    /**
+     * 记录用户对某次点评的抽奖行为
+     * 返回id
+     * @param type $customer_id
+     * @param type $store_id
+     * @param type $remark_id
+     */
+    public static function saveRemarkLottoryRecord($customer_id,$store_id,$remark_id){
+        $nt=date('Y-m-d H:i:s',time());
+        $data=["customer_id"=>$customer_id,"store_id"=>$store_id,"remark_id"=>$remark_id,"lucky_time"=>$nt];
+        $cnt=DB::insert("CustomerLuckyRecord", $data);
+        if($cnt==0){
+            return NULL;
+        }
+        return DB::row("CustomerLuckyRecord", ['*'], $data);
+    }
 }
