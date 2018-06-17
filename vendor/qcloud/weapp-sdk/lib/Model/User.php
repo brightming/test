@@ -36,4 +36,6 @@ class User
 	public static function findUserByUnionId ($unionId) {
         return DB::row('cSessionInfo', ['*'], compact('union_id'));
     }
+    
+    
 }

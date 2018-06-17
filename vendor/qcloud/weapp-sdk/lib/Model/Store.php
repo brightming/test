@@ -112,4 +112,38 @@ class Store {
         return DB::raw_select($sql);
     }
 
+    /**
+     * 获取当前某个分店、负责某个桌子的员工信息
+     */
+    public static function getStuffByStoreAndTable($store_id,$table_id){
+        $sql="select b.id,b.name from (select staff_id from StaffAndTable where table_id=$table_id) as a left join (select id ,name from StaffRole where store_id=$store_id) as b on a.staff_id=b.id";
+        $ls= DB::raw_select($sql);
+        if($ls==NULL || count($ls)==0){
+            return NULL;
+        }else{
+            return $ls[0];
+        }
+    }
+    
+   /**
+    * 获取指定分店的所有员工的满意度（来自点评数据）
+    * @param type $store_id
+    * @param type $begtime  字符串形式 2018-5-5 11:22:21
+    * @param type $endtime
+    */
+    public static function getStoreStaffSatisfaction($store_id,$begtime,$endtime){
+        $sql="select staff_name,scores from CustomerRemarkRecord where store_id=$store_id and remark_time>=$begtime and remark_time<=$endtime";
+        return DB::raw_select($sql);
+    }
+    
+    /**
+     * 获取某个分店的用户的投诉信息（次数）
+     * @param type $store_id
+     * @param type $begtime
+     * @param type $endtime
+     */
+    public static function gertStoreStaffComplain($store_id,$begtime,$endtime){
+        $sql="select staff_name,count(staff_name) as cnt from  ComplaintRecord where storeId=$store_id and create_time>=$begtime and create_time<=$endtime group by staff_name ";
+        return DB::raw_select($sql);
+    }
 }

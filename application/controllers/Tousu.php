@@ -73,6 +73,11 @@ class Tousu extends CI_Controller {
             return;
         }
 
+       $staff= \QCloud_WeApp_SDK\Model\Store::getStuffByStoreAndTable($storeId,$tableId);
+       if($staff==NULL ){
+            //该桌子无人管理
+            $staff=(object)["id"=>-1,"name"=>'nobody'];
+        }
 
         if ($token == NULL) {
             if ($pictureSeq != NULL && $pictureSeq > 0) {
@@ -80,7 +85,7 @@ class Tousu extends CI_Controller {
                 return;
             }
 
-            $res = TousuModel::addUserTousu2($userinfo->id, $extraDesc, $tableId, $storeId, 1, '', $tousuIds);
+            $res = TousuModel::addUserTousu2($userinfo->id, $extraDesc, $tableId, $storeId, 1, '', $tousuIds,$staff);
 
             if ($res == NULL) {
                 $this->json(['code' => -1, 'msg' => 'fail']);
