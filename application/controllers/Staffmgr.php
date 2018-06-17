@@ -67,11 +67,12 @@ class Staffmgr extends CI_Controller{
         }
 
         $cont = $this->input->get_request_header('Content-Type', TRUE);
-        $inputs = $this->input;
+        $inputs = $this->input->get_post();
         if (strcasecmp($cont, "application/json") == 0) {
             $raw = $GLOBALS['HTTP_RAW_POST_DATA'];
             $inputs = json_decode($raw);
         }
+        echo "inputs=$inputs</br>";
         $storeId = commonModel::get_obj_value($inputs, 'storeId');
         if ($storeId == NULL) {
             $this->json(["code" => funCodeConst::NOT_ENOUGH_PARAM['code'], "msg" => __FUNCTION__ . "." . funCodeConst::NOT_ENOUGH_PARAM['msg']]);
