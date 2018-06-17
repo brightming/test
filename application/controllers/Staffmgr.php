@@ -67,7 +67,7 @@ class Staffmgr extends CI_Controller{
         }
 
         $cont = $this->input->get_request_header('Content-Type', TRUE);
-        $inputs = $this->input->get_post();
+        $inputs = $this->input->get_post(NULL, FALSE);
         if (strcasecmp($cont, "application/json") == 0) {
             $raw = $GLOBALS['HTTP_RAW_POST_DATA'];
             $inputs = json_decode($raw);
