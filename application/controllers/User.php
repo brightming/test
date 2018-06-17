@@ -7,6 +7,7 @@ use QCloud_WeApp_SDK\Constants as Constants;
 use \QCloud_WeApp_SDK\Model\Coupon as CouponModel;
 use \QCloud_WeApp_SDK\Model\User as UserModel;
 use \QCloud_WeApp_SDK\Model\Common as commonModel;
+use QCloud_WeApp_SDK\FunctionCodeConstants as funCodeConst;
 
 class User extends CI_Controller {
 
@@ -25,8 +26,6 @@ class User extends CI_Controller {
             ]);
         }
     }
-
-   
 
     public function getUserDrawMoneyRec() {
         $customer_id = 1;
@@ -69,7 +68,7 @@ class User extends CI_Controller {
             //此店未设置抽奖
             $this->json([
                 'code' => -1,
-                'desc' => '此店未设置抽奖'
+                'msg' => '此店未设置抽奖'
             ]);
             return;
         }
@@ -81,7 +80,7 @@ class User extends CI_Controller {
             //用了过时的token
             $this->json([
                 'code' => -2,
-                'desc' => '请联系服务员扫描抽奖二维码'
+                'msg' => '请联系服务员扫描抽奖二维码'
             ]);
             return;
         }
@@ -101,7 +100,7 @@ class User extends CI_Controller {
                 //配置数据有误，全部禁止参与
                 $this->json([
                     'code' => -3,
-                    'desc' => '配置数据有误！'
+                    'msg' => '配置数据有误！'
                 ]);
                 return;
             }
@@ -119,7 +118,7 @@ class User extends CI_Controller {
         if ($userinfo == NULL) {
             $this->json([
                 'code' => -4,
-                'desc' => '用户未登录！'
+                'msg' => '用户未登录！'
             ]);
             return;
         }
@@ -138,7 +137,7 @@ class User extends CI_Controller {
                     if ($histtime >= $timeBegin1 && $histtime <= $timeEnd1 && $idx == $inwhich) {
                         $this->json([
                             'code' => -5,
-                            'desc' => '同一段时间只允许一次抽奖！'
+                            'msg' => '同一段时间只允许一次抽奖！'
                         ]);
                         return;
                     }
@@ -149,7 +148,7 @@ class User extends CI_Controller {
 
         $this->json([
             'code' => 1,
-            'desc' => '可以抽奖！'
+            'msg' => '可以抽奖！'
         ]);
     }
 
@@ -165,13 +164,13 @@ class User extends CI_Controller {
         $customer_id = $userinfo->id;
 
         $sql = ' select t1.id ,t1.remark_time as createTime,t1.extra_remark_desc as extraDesc,Store.name as storeName from (select * from CustomerRemarkRecord where customer_id=' . $customer_id . ' limit ' . $offset . ',' . $cnt . ') t1 left join Store on t1.storeId=Store.id;';
-        echo $sql;
+        //echo $sql;
         $recs = commonModel::raw_sql_select($sql);
 
 
         $this->json([
             'code' => 0,
-            'desc' => '',
+            'msg' => '',
             'data' => $recs
         ]);
     }
@@ -185,17 +184,117 @@ class User extends CI_Controller {
         $userinfo = UserModel::findUserByUnionId($unionId);
         $customer_id = $userinfo->id;
 
-        $sql = '  select t2.seq as seq,t2.content ,t1.remark_score as score from (select * from CustomerRemarkDetail where customer_remark_rec_id=' . $remark_rec_id . ') t1 left join RemarkTemplate t2 on t1.remark_template_id=t2.id;';
-        $recs = commonModel::raw_sql_select($sql);
-
-        $this->json([
-            'code' => 0,
-            'desc' => '',
-            'data' => $recs
-        ]);
+        //$sql = '  select t2.seq as seq,t2.content ,t1.remark_score as score from (select * from CustomerRemarkDetail where customer_remark_rec_id=' . $remark_rec_id . ') t1 left join RemarkTemplate t2 on t1.remark_template_id=t2.id;';
+        //$recs = commonModel::raw_sql_select($sql);
+//        getUserRemarkById
+        $remark = QCloud_WeApp_SDK\Model\Remark::getUserRemarkById($remark_rec_id);
+        if ($remark != NULL) {
+            $this->json([
+                'code' => 0,
+                'msg' => '',
+                'data' => $remark->scores
+            ]);
+        } else {
+            $this->json([
+                'code' => 0,
+                'msg' => '',
+                'data' => []
+            ]);
+        }
     }
-    
-    
-   
+
+    /**
+     * 是否是一个员工
+     */
+    public function isStaff() {
+        $met = $this->input->method();
+        if (strcasecmp($met, "post") != 0) {
+            $this->json(["code" => funCodeConst::NEED_POST_METHOD['code'], "msg" => __FUNCTION__ . "." . funCodeConst::NEED_POST_METHOD['msg']]);
+            return;
+        }
+
+        $unionId = $this->input->post("unionId");
+        $userinfo = UserModel::findUserByUnionId($unionId);
+        if ($userinfo == NULL) {
+            $this->json(["code" => funCodeConst::INVALID_USER['code'], "msg" => __FUNCTION__ . "." . funCodeConst::INVALID_USER['msg']]);
+            return;
+        }
+        if ($userinfo->is_staff != 1) {
+            $this->json(["code" => 0,
+                "msg" => '',
+                'data' => [
+                    "result" => false
+                ]
+            ]);
+            return;
+        }
+
+        //获取角色
+        $role = UserModel::getStaffRoleDetail($userinfo->id);
+        if ($role != NULL) {
+            $this->json(["code" => 0,
+                "msg" => '',
+                'data' => [
+                    "result" => true,
+                    "role" => $role
+                ]
+            ]);
+        } else {
+            $this->json(["code" => 0,
+                "msg" => 'no role info',
+                'data' => [
+                    "result" => true,
+                    "role" => []
+                ]
+            ]);
+        }
+    }
+
+    /**
+     * 是否是领班
+     */
+    public function isGroupLeader() {
+        $met = $this->input->method();
+        if (strcasecmp($met, "post") != 0) {
+            $this->json(["code" => funCodeConst::NEED_POST_METHOD['code'], "msg" => __FUNCTION__ . "." . funCodeConst::NEED_POST_METHOD['msg']]);
+            return;
+        }
+
+        $unionId = $this->input->post("unionId");
+        $userinfo = UserModel::findUserByUnionId($unionId);
+        if ($userinfo == NULL) {
+            $this->json(["code" => funCodeConst::INVALID_USER['code'], "msg" => __FUNCTION__ . "." . funCodeConst::INVALID_USER['msg']]);
+            return;
+        }
+        if ($userinfo->is_staff != 1) {
+            $this->json(["code" => 0,
+                "msg" => '',
+                'data' => [
+                    "result" => false
+                ]
+            ]);
+            return;
+        }
+
+        //获取角色
+        $role = UserModel::getStaffRoleDetail($userinfo->id);
+        if ($role != NULL) {
+            $this->json(["code" => 0,
+                "msg" => '',
+                'data' => [
+                    "result" => (strcasecmp("领班", $role->role_name) == 0 ? true : false),
+                    "role" => $role
+                ]
+            ]);
+        } else {
+            $this->json(["code" => 0,
+                "msg" => 'no role info',
+                'data' => [
+                    "is_staff" => true,
+                    "role" => []
+                ]
+            ]);
+        }
+    }
 
 }

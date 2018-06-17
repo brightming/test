@@ -37,5 +37,16 @@ class User
         return DB::row('cSessionInfo', ['*'], compact('union_id'));
     }
     
-    
+    /**
+     * 获取指定id的员工的角色详情
+     */
+    public static function getStaffRoleDetail($staff_id){
+        $sql="select a.name,b.name as role_name from (select * from StaffRole where staff_id=$staff_id) as a left join Role as b on a.role_id=b.id";
+        $res=DB::raw_select($sql);
+        if($res==NULL || count($res)==0){
+            return NULL;
+        }else{
+            return $res[0];
+        }
+    }
 }
