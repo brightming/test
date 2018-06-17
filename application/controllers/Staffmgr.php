@@ -17,7 +17,7 @@ use QCloud_WeApp_SDK\Model\Common as commonModel;
  * 领班的小程序
  * @author gumh
  */
-class Stuffmgr {
+class Stuffmgr extends CI_Controller{
     //put your code here
 
     /**
