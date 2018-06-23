@@ -56,17 +56,17 @@ class Remark {
      * remarkData是stdclass,包含有：desc：字符串，scores：数组，storeId：数字，tableId：数字
      *
      */
-    public static function aaddUserRemark($input_customer_id,$storeId,$tableId,$scores_json,$extra_desc,$staff) {
+    public static function addUserRemark($input_customer_id, $remarkData) {
         //插入CustomerRemarkRecord
         $customer_id = $input_customer_id;
         $remark_time = date('Y-m-d H:i:s');
         $order_id = strtotime($remark_time);
-        $extra_remark_desc = $extra_desc;
-        $scores=json_encode($scores_json);
-        $staff_id=$staff->id;
-        $staff_name=$staff->name;
+        $extra_remark_desc = $remarkData->extraDesc;
+        $tableId = $remarkData->tableId;
+        $storeId = $remarkData->storeId;
+        $remarks=json_encode($remarkData->scores);
 
-        DB::insert('CustomerRemarkRecord', compact('customer_id', 'remark_time', 'order_id', 'extra_remark_desc', 'tableId', 'storeId','scores','staff_id','staff_name'));
+        DB::insert('CustomerRemarkRecord', compact('customer_id', 'remark_time', 'order_id', 'extra_remark_desc', 'tableId', 'storeId','remarks'));
         $res = DB::row('CustomerRemarkRecord', ['*'], compact('order_id', 'tableId'));
 
 //        $customer_remark_rec_id = $res->id;

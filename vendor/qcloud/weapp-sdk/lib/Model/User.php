@@ -13,6 +13,10 @@ class User
         $last_visit_time = $create_time;
         $open_id = $userinfo->openId;
         $user_info = json_encode($userinfo);
+        $union_id="";
+        if (property_exists($userinfo, "unionId")) {
+            $union_id = $userinfo->unionId;
+        }
 
         $res = DB::row('cSessionInfo', ['*'], compact('open_id'));
         if ($res === NULL) {
@@ -35,18 +39,5 @@ class User
     }
 	public static function findUserByUnionId ($unionId) {
         return DB::row('cSessionInfo', ['*'], compact('union_id'));
-    }
-    
-    /**
-     * 获取指定id的员工的角色详情
-     */
-    public static function getStaffRoleDetail($staff_id){
-        $sql="select a.name,b.name as role_name from (select * from StaffRole where staff_id=$staff_id) as a left join Role as b on a.role_id=b.id";
-        $res=DB::raw_select($sql);
-        if($res==NULL || count($res)==0){
-            return NULL;
-        }else{
-            return $res[0];
-        }
     }
 }

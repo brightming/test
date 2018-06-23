@@ -84,17 +84,9 @@ class Remark extends CI_Controller {
                 $can_add = true;
             }
         }
-        
-        //当前桌子是哪个服务员的
-        $staff= storeModel::getStuffByStoreAndTable($storeId, $tableId);
-        if($staff==NULL ){
-            //该桌子无人管理
-            $staff=(object)["id"=>-1,"name"=>'nobody'];
-        }
-        
 
         if ($can_add == true) {
-            $result = remarkModel::addUserRemark($userinfo->id,$storeId,$tableId,$scores,$desc,$staff);
+            $result = remarkModel::addUserRemark($userinfo->id, $mypost);
         }
         /**/
         $this->json([
